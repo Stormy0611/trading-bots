@@ -1,7 +1,6 @@
 # region imports
 from AlgorithmImports import *
-from Lean.Indicators import *
-# from QuantConnect.Indicators import *
+from QuantConnect.Indicators import *
 from QuantConnect import *
 from collections import deque
 # endregion
@@ -35,17 +34,17 @@ class CryingApricotBison(QCAlgorithm):
         # Create a QuantConnect indicator and a python custom indicator for comparison
         self.vwma50 = VolumeWeightMovingAverage("VWMA 50", self.symbol, 50)
         # The python custom class must inherit from PythonIndicator to enable Updated event handler
-        self.vwma50.Updated += self.CustomUpdated
+        # self.vwma50.Updated += self.CustomUpdated
         self.RegisterIndicator(self.symbol, self.vwma50, Resolution.Minute)
         self.PlotIndicator("VWMA 50", self.vwma50)
 
         self.vwma100 = VolumeWeightMovingAverage("VWMA 100", self.symbol, 100)
-        self.vwma100.Updated += self.CustomUpdated
+        # self.vwma100.Updated += self.CustomUpdated
         self.RegisterIndicator(self.symbol, self.vwma100, Resolution.Minute)
         self.PlotIndicator("VWMA 100", self.vwma100)
 
         self.vwma200 = VolumeWeightMovingAverage("VWMA 200", self.symbol, 200)
-        self.vwma200.Updated += self.CustomUpdated
+        # self.vwma200.Updated += self.CustomUpdated
         self.RegisterIndicator(self.symbol, self.vwma200, Resolution.Minute)
         self.PlotIndicator("VWMA 200", self.vwma200)
 
@@ -83,18 +82,20 @@ class VolumeWeightMovingAverage(PythonIndicator):
         self.Value = 0
         self.queue_vol = deque(maxlen=period)
         self.queue_clo = deque(maxlen=period)
+        self.tradebar_indicator = TradeBarIndicator(name)
 
     def Update(self, input: BaseData):
         # self.queue.appendleft(input.Value)
-        self.queue_clo.appendleft(self.Bars[self.Symbol].Close)
-        self.queue_vol.appendleft(self.Bars[self.Symbol].Volume)
-        count = len(self.queue_vol)
-        self.Time = input.Time
-        self.Value = 0
-        for i in range(count):
-            self.Value += self.queue_clo[i] * self.queue_vol
-        self.Value /= sum(self.queue_vol)
-        return count == self.queue_vol.maxlen
+        QCAlgorithm.Debug(self.tradebar_indicator.Bars[self.Symbol].Close)
+        # self.queue_clo.appendleft(self.Bars[self.Symbol].Close)
+        # self.queue_vol.appendleft(self.Bars[self.Symbol].Volume)
+        # count = len(self.queue_vol)
+        # self.Time = input.Time
+        # self.Value = 0
+        # for i in range(count):
+        #     self.Value += self.queue_clo[i] * self.queue_vol
+        # self.Value /= sum(self.queue_vol)
+        # return count == self.queue_vol.maxlen
 
 
 class HLC3(PythonIndicator):
