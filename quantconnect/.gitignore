@@ -1,1 +1,6 @@
-Lean
+/New folder
+/venv
+/include
+/Lean
+/Lib
+*.cfg
