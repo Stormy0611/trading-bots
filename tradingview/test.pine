@@ -1,0 +1,23 @@
+//@version=5
+// # ========================================================================= #
+// #                   |  test Indicator  |
+// # ========================================================================= #
+indicator(title = "test", shorttitle = "", overlay =  true)
+// # ========================================================================= #
+// #                   |  test Indicator  |
+// # ========================================================================= #
+
+vwma20 = ta.vwma(source = close, length = 20) 
+vwma50 = ta.vwma(source = close, length = 50) 
+vwma100 = ta.vwma(source = close, length = 100) 
+vwma200 = ta.vwma(source = close, length = 200) 
+
+vol40 = ta.ema(source = volume, length = 40) 
+
+plot(series = vwma20, title = "VWMA 20", color = color.new(color = color.aqua, transp = 0))
+plot(series = vwma50, title = "VWMA 50", color = color.new(color = color.blue, transp = 0))
+plot(series = vwma100, title = "VWMA 100", color = color.new(color = color.green, transp = 0))
+plot(series = vwma200, title = "VWMA 200", color = color.new(color = color.red, transp = 0))
+
+plot(series = vol40, title = "VOL 40", color = color.new(color = color.white, transp = 0))
+
