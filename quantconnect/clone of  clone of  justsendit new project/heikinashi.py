@@ -7,9 +7,9 @@ class Heikin_Ashi():
 
     def __init__(self, algorithm):
         self.algorithm = algorithm
-        self.TEMA_Period = config.TEMA_PERIOD
-        self.EMA_Period = config.EMA_PERIOD
-        self.Candle_Size_Factor = config.CANDLE_SIZE_FACTOR
+        self.TEMA_Period = self.GetParameter("TEMA_PERIOD", 55)
+        self.EMA_Period = self.GetParameter("EMA_PERIOD", 60)
+        self.Candle_Size_Factor = self.GetParameter("CANDLE_SIZE_FACTOR", 1.1)
         self.ema_close = ExponentialMovingAverage(self.EMA_Period) # SRC =
       
         self.EMA_Dictionary = {}
@@ -238,9 +238,9 @@ class Calc_Tema():
 
     def __init__(self, algorithm):
         self.algorithm = algorithm
-        self.TEMA_Period = config.TEMA_PERIOD
-        self.EMA_Period = config.EMA_PERIOD
-        self.Candle_Size_Factor = config.CANDLE_SIZE_FACTOR
+        self.TEMA_Period = self.GetParameter("TEMA_PERIOD", 55)
+        self.EMA_Period = self.GetParameter("EMA_PERIOD", 60)
+        self.Candle_Size_Factor = self.GetParameter("CANDLE_SIZE_FACTOR", 1.1)
         self.ema_1 = ExponentialMovingAverage(self.TEMA_Period) # SRC =
         self.ema_2 = ExponentialMovingAverage(self.TEMA_Period) # SRC = EMA1
         self.ema_3 = ExponentialMovingAverage(self.TEMA_Period) # SRC = EMA2

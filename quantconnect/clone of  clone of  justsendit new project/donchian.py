@@ -8,7 +8,7 @@ class Donchian_Ribbon():
     
     def __init__(self, algorithm):
 
-        self.Donchian_Channel_Period = config.DONCHIAN_PERIOD
+        self.Donchian_Channel_Period = self.GetParameter("DONCHIAN_PERIOD", 20)
         self.HH_LL_Period = 2
         self.Highest_High = deque(maxlen=self.HH_LL_Period)
         self.Lowest_Low = deque(maxlen=self.HH_LL_Period)

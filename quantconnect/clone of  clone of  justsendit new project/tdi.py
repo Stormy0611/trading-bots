@@ -12,9 +12,9 @@ class TDI():
 
        
 
-        self.Band_Length = config.BAND_LENGTH
-        self.Fast_MA_On_RSI = config.FAST_MA_ON_RSI
-        self.Slow_MA_On_RSI = config.SLOW_MA_ON_RSI
+        self.Band_Length = self.GetParameter("BAND_LENGTH", 31)
+        self.Fast_MA_On_RSI = self.GetParameter("FAST_MA_ON_RSI", 1)
+        self.Slow_MA_On_RSI = self.GetParameter("SLOW_MA_ON_RSI", 9)
         self.algorithm = algorithm
         self.ma = deque(maxlen=self.Band_Length)
         self.ma_value = None

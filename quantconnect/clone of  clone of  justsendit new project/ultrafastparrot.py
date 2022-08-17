@@ -7,13 +7,13 @@ class UltraFastParrot():
 
 
     def __init__(self, algorithm):
-        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
-        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=config.SIGNAL_SIGMA , offset=config.SIGNAL_OFFSET)
+        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
+        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=self.GetParameter("SIGNAL_SIGMA", 6) , offset=self.GetParameter("SIGNAL_OFFSET", 0.85))
 
         self.Previous_Close = deque(maxlen=2)
         self.PC = None
@@ -137,14 +137,14 @@ class Double_Smooth():
     def __init__(self, algorithm):
         self.algorithm = algorithm
         
-        self.Short = config.SHORT_ALMA_LENGTH
-        self.Long = config.LONG_ALMA_LENGTH
-        self.Offset = config.FAST_OFFSET
-        self.OffsetT = config.TREND_OFFSET
-        self.Sigma = config.FAST_SIGMA
-        self.SigmaT = config.TREND_SIGMA
-        self.First_Smooth = ArnaudLegouxMovingAverage(period=config.LONG_ALMA_LENGTH, sigma=self.SigmaT , offset=self.OffsetT)
-        self.Last_Smooth = ArnaudLegouxMovingAverage(period=config.SHORT_ALMA_LENGTH, sigma=self.Sigma , offset=self.Offset)
+        self.Short = self.GetParameter("SHORT_ALMA_LENGTH", 5)
+        self.Long = self.GetParameter("LONG_ALMA_LENGTH", 21)
+        self.Offset = self.GetParameter("FAST_OFFSET", 0.75)
+        self.OffsetT = self.GetParameter("TREND_OFFSET", 0.75)
+        self.Sigma = self.GetParameter("FAST_SIGMA", 4)
+        self.SigmaT = self.GetParameter("TREND_SIGMA", 4)
+        self.First_Smooth = ArnaudLegouxMovingAverage(period=self.GetParameter("LONG_ALMA_LENGTH", 21), sigma=self.SigmaT , offset=self.OffsetT)
+        self.Last_Smooth = ArnaudLegouxMovingAverage(period=self.GetParameter("SHORT_ALMA_LENGTH", 5), sigma=self.Sigma , offset=self.Offset)
         self.Test_Queue = deque(maxlen=10)
         self.IsRdy = False
         self.Return_Value = None
