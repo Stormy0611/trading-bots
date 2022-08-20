@@ -1,0 +1,29 @@
+{
+    "algorithm-language": "Python",
+    "parameters": {
+        "SMMA_SLOW_LENGTH": 300,
+        "SMMA_FAST_LENGTH": 100,
+        "SMMA_FASTEST_LENGTH": 50,
+        "DONCHIAN_PERIOD": 20,
+        "VOLATILITY_PERIOD": 100,
+        "TDI_RSI": 11,
+        "BAND_LENGTH": 31,
+        "FAST_MA_ON_RSI": 1,
+        "SLOW_MA_ON_RSI": 9,
+        "VOLUME_MA_LENGTH": 40,
+        "TEMA_PERIOD": 55,
+        "EMA_PERIOD": 60,
+        "CANDLE_SIZE_FACTOR": 1.1,
+        "SHORT_ALMA_LENGTH": 5,
+        "LONG_ALMA_LENGTH": 21,
+        "FAST_OFFSET": 0.75,
+        "FAST_SIGMA": 4,
+        "TREND_OFFSET": 0.75,
+        "TREND_SIGMA": 4,
+        "SIGNAL_OFFSET": 0.85,
+        "SIGNAL_SIGMA": 6
+    },
+    "description": "",
+    "cloud-id": 12580399,
+    "local-id": 587163311
+}
