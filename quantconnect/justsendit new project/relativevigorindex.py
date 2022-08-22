@@ -43,17 +43,4 @@ class RVGI():
         
         
         
-        if len(self.volume_osc) == 2:
-            self.is_ready = True
-        
-            if self.volume_osc_value > 0:
-                self.Bearish = False
-                self.Bullish = True
-            elif self.volume_osc_value < 0:
-                self.Bullish = False
-                self.Bearish = True
-            else:
-                self.Bullish = False
-                self.Bearish = False
-
                 

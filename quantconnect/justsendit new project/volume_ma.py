@@ -9,9 +9,9 @@ from collections import deque
 
 class VOL_MA():
     
-    def __init__(self, algorithm):
+    def __init__(self, algorithm, length):
 
-        self.Length = config.VOLUME_MA_LENGTH
+        self.Length = length
 
         self.volume_ma = deque(maxlen=self.Length)
         self.volume_ma_value = None
@@ -24,16 +24,16 @@ class VOL_MA():
 
         
 
-    def Bull_Or_Bear(self, volume, color):
-        self.volume_ma.appendleft(volume)
+    def Bull_Or_Bear(self, bar, color):
+        self.volume_ma.appendleft(bar.Volume)
 
         if len(self.volume_ma) == self.Length:
             self.volume_ma_value = sum(self.volume_ma) / len(self.volume_ma)
 
-            if volume > self.volume_ma_value and color > 0:
+            if bar.Volume > self.volume_ma_value:
                 self.Bearish = False
                 self.Bullish = True
-            elif volume > self.volume_ma_value and color < 0:
+            elif bar.Volume < self.volume_ma_value:
                 self.Bullish = False
                 self.Bearish = True
             else:

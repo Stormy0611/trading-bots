@@ -1,5 +1,4 @@
 #region imports
-from importlib.resources import is_resource
 from AlgorithmImports import *
 #endregion
 import config
