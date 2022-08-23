@@ -13,7 +13,7 @@ class PGO_LB():
 
         self.Length = length
 
-        self.pgo_osc = deque(maxlen=self.Length)
+        # self.pgo_osc = deque(maxlen=self.Length)
         self.is_ready = False
         # self.short = deque(maxlen=self.Length_short)
         # self.short = deque(maxlen=self.Length_short)
@@ -27,17 +27,24 @@ class PGO_LB():
         self.Bullish = False
         self.Bearish = False
 
-
+    def Update(self, bartime, value):
+        self.tr.Update(IndicatorDataPoint(bartime))
+        if self.tr.IsReady:
+            self.sma.Update(IndicatorDataPoint(bartime, value))
+            self.ema.Update(IndicatorDataPoint(bartime, self.tr.Current.Value))
+        if self.ema.IsReady:
+            self.pgo_osc_value = (value - self.sma.Current.Value) / self.ema.Current.Value
+            self.is_ready = True
         
 
     def Bull_Or_Bear(self, color, bar):
-        self.tr.Update(IndicatorDataPoint(bar.EndTime))
-        if self.tr.IsReady:
-            self.sma.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
-            self.ema.Update(IndicatorDataPoint(bar.EndTime, self.tr.Current.Value))
-        if self.ema.IsReady:
-            self.pgo_osc_value = (bar.Close - self.sma.Current.Value) / self.ema.Current.Value
-            self.is_ready = True
+        # self.tr.Update(IndicatorDataPoint(bar.EndTime))
+        # if self.tr.IsReady:
+        #     self.sma.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
+        #     self.ema.Update(IndicatorDataPoint(bar.EndTime, self.tr.Current.Value))
+        # if self.ema.IsReady:
+        #     self.pgo_osc_value = (bar.Close - self.sma.Current.Value) / self.ema.Current.Value
+        #     self.is_ready = True
         
         
             if self.pgo_osc_value > 0:

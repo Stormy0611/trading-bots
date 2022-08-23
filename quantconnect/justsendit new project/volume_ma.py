@@ -15,6 +15,7 @@ class VOL_MA():
 
         self.volume_ma = deque(maxlen=self.Length)
         self.volume_ma_value = None
+        self.is_ready = False
 
       
 
@@ -22,13 +23,21 @@ class VOL_MA():
         self.Bearish = False
 
 
-        
-
-    def Bull_Or_Bear(self, bar, color):
-        self.volume_ma.appendleft(bar.Volume)
+    def Update(self, value):
+        self.volume_ma.appendleft(value)
 
         if len(self.volume_ma) == self.Length:
             self.volume_ma_value = sum(self.volume_ma) / len(self.volume_ma)
+            self.is_ready = True
+
+        
+
+    def Bull_Or_Bear(self, bar, color):
+        # self.volume_ma.appendleft(bar.Volume)
+
+        # if len(self.volume_ma) == self.Length:
+        #     self.is_ready = True
+        #     self.volume_ma_value = sum(self.volume_ma) / len(self.volume_ma)
 
             if bar.Volume > self.volume_ma_value:
                 self.Bearish = False

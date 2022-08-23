@@ -30,27 +30,27 @@ class TSI():
         self.Bearish = False
 
 
-    def Double_Smooth(self, src, bar):
-        self.fist_smooth_ema.Update(IndicatorDataPoint(bar.EndTime, src))
+    def Double_Smooth(self, src, bartime):
+        self.fist_smooth_ema.Update(IndicatorDataPoint(bartime, src))
         if self.fist_smooth_ema.IsReady:
-            self.double_fist_smooth_ema.Update(IndicatorDataPoint(bar.EndTime, self.fist_smooth_ema.Current.Value))
+            self.double_fist_smooth_ema.Update(IndicatorDataPoint(bartime, self.fist_smooth_ema.Current.Value))
         if self.double_fist_smooth_ema.IsReady:
             return self.double_fist_smooth_ema.Current.values
         else:
             return 0
         
 
-    def Bull_Or_Bear(self, volume, color, bar):
+    def Update(self, bartime, value):
         
-        self.close.append(bar.Close)
+        self.close.append(value)
         if len(self.close) == 2:
             pc = self.close[1] - self.close[0]
-            double_smoothed_pc = self.Double_Smooth(pc, bar)
-            double_smoothed_abs_pc = self.Double_Smooth(abs(pc), bar)
+            double_smoothed_pc = self.Double_Smooth(pc, bartime)
+            double_smoothed_abs_pc = self.Double_Smooth(abs(pc), bartime)
             if double_smoothed_abs_pc * double_smoothed_pc:
                 self.tsi_value = 100 * (double_smoothed_pc / double_smoothed_abs_pc)
                 self.tsi.append(self.tsi_value)
-                self.tsi_ema.Update(IndicatorDataPoint(bar.EndTime, self.tsi_value))
+                self.tsi_ema.Update(IndicatorDataPoint(bartime, self.tsi_value))
                 if self.tsi_ema.IsReady:
                     self.tsi_ema_value = self.tsi_ema.Current.Value
                     self.is_ready = True

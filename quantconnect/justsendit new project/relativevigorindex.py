@@ -18,16 +18,16 @@ class RVGI():
         self.rvgi_value = None
         self.is_ready = False
         
-        self.swma_co = SWMA()
-        self.swma_hl = SWMA()
-        self.swma_rvgi = SWMA()
+        self.swma_co = SWMA(algorithm)
+        self.swma_hl = SWMA(algorithm)
+        self.swma_rvgi = SWMA(algorithm)
         self.sig_value = None
         
         self.Bullish = False
         self.Bearish = False
         
 
-    def Bull_Or_Bear(self, color, bar):
+    def Update(self, bar):
         
         swma_co_value = self.swma_co.get_value(bar.Close - bar.Open)
         swma_hl_value = self.swma_hl.get_value(bar.High - bar.Low)

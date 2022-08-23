@@ -47,10 +47,10 @@ class STC():
 
         
 
-    def Bull_Or_Bear(self, color, bar):
+    def Update(self, bartime, value):
         
-        self.fastMA.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
-        self.slowMA.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
+        self.fastMA.Update(IndicatorDataPoint(bartime, value))
+        self.slowMA.Update(IndicatorDataPoint(bartime, value))
         if self.slowMA.IsReady:
             self.d_fs_value = self.fastMA.Current.Value - self.slowMA.Current.Value
             self.d_fs.append(self.d_fs_value)
@@ -87,16 +87,4 @@ class STC():
             else:
                 self.color = "RED"    
 
-        
-        
-        if self.color == "GREEN":
-                self.Bearish = False
-                self.Bullish = True
-        elif self.color == "RED":
-                self.Bullish = False
-                self.Bearish = True
-        else:
-                self.Bullish = False
-                self.Bearish = False
-
-                
+               
