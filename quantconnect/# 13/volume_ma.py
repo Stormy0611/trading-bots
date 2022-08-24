@@ -11,7 +11,7 @@ class VOL_MA():
     
     def __init__(self, algorithm):
 
-        self.Length = self.GetParameter("VOLUME_MA_LENGTH", 40)
+        self.Length = config.VOLUME_MA_LENGTH
 
         self.volume_ma = deque(maxlen=self.Length)
         self.volume_ma_value = None

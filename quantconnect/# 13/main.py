@@ -27,10 +27,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Indicators["HEIKINASHI"] = heikinashi.Heikin_Ashi(self)
         self.Indicators["ULTRAPARROT"] = ultrafastparrot.UltraFastParrot(self)
         self.lambda_func = lambda x: (x.High + x.Low) / 2.0
-        # self.SMMA_Slow_Length = self.GetParameter("SMMA_SLOW_LENGTH
-        self.SMMA_Slow_Length = self.GetParameter("SMMA_SLOW_LENGTH", 300)
-        self.SMMA_Fast_Length = self.GetParameter("SMMA_FAST_LENGTH", 100)
-        self.SMMA_Fastest_Length = self.GetParameter("SMMA_FASTEST_LENGTH", 50)
+        # self.SMMA_Slow_Length = config.SMMA_SLOW_LENGTH
+        self.SMMA_Slow_Length = config.SMMA_SLOW_LENGTH
+        self.SMMA_Fast_Length = config.SMMA_FAST_LENGTH
+        self.SMMA_Fastest_Length = config.SMMA_FASTEST_LENGTH
 
         self.sma_slow = SimpleMovingAverage(self.SMMA_Slow_Length)
         self.sma_fast = SimpleMovingAverage(self.SMMA_Fast_Length)
@@ -52,7 +52,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.SMMA_Fastest = None
 
 
-        self.rsi_tdi = RelativeStrengthIndex(self.GetParameter("TDI_RSI", 11))
+        self.rsi_tdi = RelativeStrengthIndex(config.TDI_RSI)
         self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
 
         if self.SMMA_Slow is None and self.sma_slow.IsReady:
