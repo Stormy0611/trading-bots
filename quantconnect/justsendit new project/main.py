@@ -13,6 +13,8 @@ from truestrenthindex import TSI
 from volume_ma import VOL_MA
 from volume_osc import VOL_OSC
 from vwma import VWMA
+from kairirelativeindex import KRI
+from elliotwaveosc import EWO_LB
 
 
 class LogicalSkyBlueDog(QCAlgorithm):
@@ -38,6 +40,8 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.STC_FAST_LENGTH = config.STC_FAST
         self.STC_SLOW_LENGTH = config.STC_SLOW
         self.STC_AAA = config.STC_AAA
+        self.KRI_LENGTH = config.KRI_LENGTH
+        self.VWAP_LENGTH = config.VWAP_LENGTH
         
         self.Indicators = {}
         self.Indicators['VOL_MA'] = VOL_MA(self, length=self.VOL_MA_LENGTH)
@@ -59,8 +63,11 @@ class LogicalSkyBlueDog(QCAlgorithm):
                                      fast=self.STC_FAST_LENGTH,
                                      slow=self.STC_SLOW_LENGTH,
                                      AAA=self.STC_AAA)
-        
-        
+        self.Indicators['KRI'] = KRI(self, 
+                                    length=self.KRI_LENGTH)
+        self.Indicators['EWO_LB'] = EWO_LB(self)
+        self.Indicators['VWAP'] = VolumeWeightedAveragePriceIndicator(self.VWAP_LENGTH)
+
         
         # self.lambda_func = lambda x: (x.High + x.Low) / 2.0
 
@@ -110,6 +117,9 @@ class LogicalSkyBlueDog(QCAlgorithm):
         tsi = self.Indicators['TSI']
         rvgi = self.Indicators['RVGI']
         stc = self.Indicators['STC']
+        kri = self.Indicators['KRI']
+        ewo_lb = self.Indicators['EWO_LB']
+        vwap = self.Indicators['VWAP']
         
         vol_ma.Update(data.Bars[self.Crypto].Volume)
         vwma1.Update(data.Bars[self.Crypto].EndTime, 
@@ -118,7 +128,6 @@ class LogicalSkyBlueDog(QCAlgorithm):
         vwma2.Update(data.Bars[self.Crypto].EndTime, 
                      data.Bars[self.Crypto].Volume,
                      data.Bars[self.Crypto].Close)
-        
         vwma3.Update(data.Bars[self.Crypto].EndTime, 
                      data.Bars[self.Crypto].Volume,
                      data.Bars[self.Crypto].Close)
@@ -134,10 +143,56 @@ class LogicalSkyBlueDog(QCAlgorithm):
         rvgi.Update(data.Bars[self.Crypto])
         stc.Update(data.Bars[self.Crypto].EndTime, 
                      data.Bars[self.Crypto].Close)
+        kri.Update(data.Bars[self.Crypto].EndTime, 
+                     data.Bars[self.Crypto].Close)
+        ewo_lb.Update(data.Bars[self.Crypto].EndTime, 
+                     data.Bars[self.Crypto].Close)
+        vwap.Update(IndicatorDataPoint(
+            data.Bars[self.Crypto].EndTime,
+            data.Bars[self.Crypto].Close))
         
-        
-        
-        
+        if vol_ma.is_ready and \
+            vwma2.is_ready and \
+            vwma3.is_ready and \
+            vwma4.is_ready and \
+            vwap.IsReady and \
+            vol_osc.is_ready and \
+            ewo_lb.is_ready and \
+            kri.is_ready and \
+            pgo_lb.is_ready:
+                vol_ma.Bull_Or_Bear(data.Bars[self.Crypto])
+                vol_osc.Bull_Or_Bear(data.Bars[self.Crypto])
+                pgo_lb.Bull_Or_Bear(data.Bars[self.Crypto])
+                kri.Bull_Or_Bear(data.Bars[self.Crypto])
+                ewo_lb.Bull_Or_Bear(data.Bars[self.Crypto])
+                if vol_ma.Bullish and \
+                   vol_osc.Bullish and \
+                   pgo_lb.Bullish and \
+                   kri.Bullish and \
+                   ewo_lb.Bullish and \
+                   vwma4.value > vwma3.value and \
+                   vwma3.value > vwma2.value and \
+                   data.Bars[self.Crypto].Close > vwap.Current.Value:
+                       if not self.Portfolio[self.Crypto].IsLong:
+                           self.SetHoldings(self.Crypto, 1)
+                elif vol_ma.Bearish and \
+                   vol_osc.Bearish and \
+                   pgo_lb.Bearish and \
+                   kri.Bearish and \
+                   ewo_lb.Bearish and \
+                   vwma4.value < vwma3.value and \
+                   vwma3.value < vwma2.value and \
+                   data.Bars[self.Crypto].Close < vwap.Current.Value:
+                       if not self.Portfolio[self.Crypto].IsShort:
+                           self.SetHoldings(self.Crypto, -1)
+
+                if self.Portfolio[self.Crypto].Invested:
+                    if self.Portfolio[self.Crypto].UnrealizedProfitPercent > 0.01:
+                        self.SetHoldings(self.Crypto, 0)
+
+                    if self.Portfolio[self.Crypto].UnrealizedProfitPercent < -0.05:
+                        self.SetHoldings(self.Crypto, 0)
+                    
          
         # # self.Debug(f" {self.Time} {ultra_fast_parrot.TSI_Hist_Color}")
 

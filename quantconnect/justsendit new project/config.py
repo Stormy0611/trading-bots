@@ -23,3 +23,7 @@ STC_LENGTH = 12
 STC_FAST = 26
 STC_SLOW = 50
 STC_AAA = 0.5
+
+KRI_LENGTH = 28
+
+VWAP_LENGTH = 24 # 1D(24 Hours) / Resolution.Hour

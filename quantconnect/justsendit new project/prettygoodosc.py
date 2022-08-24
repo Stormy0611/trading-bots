@@ -20,7 +20,7 @@ class PGO_LB():
         self.sma = SimpleMovingAverage(self.Length)
         self.ema = ExponentialMovingAverage(self.Length)
         self.tr = TrueRange()
-        self.pgo_osc_value = None
+        self.value = None
 
       
 
@@ -33,24 +33,24 @@ class PGO_LB():
             self.sma.Update(IndicatorDataPoint(bartime, value))
             self.ema.Update(IndicatorDataPoint(bartime, self.tr.Current.Value))
         if self.ema.IsReady:
-            self.pgo_osc_value = (value - self.sma.Current.Value) / self.ema.Current.Value
+            self.value = (value - self.sma.Current.Value) / self.ema.Current.Value
             self.is_ready = True
         
 
-    def Bull_Or_Bear(self, color, bar):
+    def Bull_Or_Bear(self, bar):
         # self.tr.Update(IndicatorDataPoint(bar.EndTime))
         # if self.tr.IsReady:
         #     self.sma.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
         #     self.ema.Update(IndicatorDataPoint(bar.EndTime, self.tr.Current.Value))
         # if self.ema.IsReady:
-        #     self.pgo_osc_value = (bar.Close - self.sma.Current.Value) / self.ema.Current.Value
+        #     self.value = (bar.Close - self.sma.Current.Value) / self.ema.Current.Value
         #     self.is_ready = True
         
-        
-            if self.pgo_osc_value > 0:
+        if self.is_ready:
+            if self.value > 3:
                 self.Bearish = False
                 self.Bullish = True
-            elif self.pgo_osc_value < 0:
+            elif self.value < -3:
                 self.Bullish = False
                 self.Bearish = True
             else:

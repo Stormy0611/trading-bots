@@ -81,10 +81,20 @@ class STC():
                     if len(self.stc) == 2:
                         self.is_ready = True
         
-        if self.is_ready == True:
+        if self.is_ready:
             if self.stc[1] >= self.stc[0]:
                 self.color = "GREEN"
             else:
                 self.color = "RED"    
 
-               
+    def Bull_Or_Bear(self, bar)               :
+        if self.is_ready:
+            if self.color == "GREEN":
+                self.Bullish = True
+                self.Bearish = False
+            elif self.color == "RED":
+                self.Bullish = False
+                self.Bearish = False
+            else:
+                self.Bullish = False
+                self.Bearish = False

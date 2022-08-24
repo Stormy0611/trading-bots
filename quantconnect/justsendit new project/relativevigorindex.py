@@ -41,6 +41,16 @@ class RVGI():
             if self.sig_value:
                 self.is_ready = True
         
-        
+    def Bull_Or_Bear(self, bar):
+        if self.is_ready:
+            if self.rvgi_value > self.sig_value:
+                self.Bullish = True
+                self.Bearish = False
+            elif self.rvgi_value < self.sig_value:
+                self.Bullish = False
+                self.Bearish = True
+            else:
+                self.Bullish = False
+                self.Bearish = False
         
                 

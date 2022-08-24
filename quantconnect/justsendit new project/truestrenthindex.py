@@ -1,4 +1,5 @@
 #region imports
+from gc import is_tracked
 from AlgorithmImports import *
 #endregion
 import config
@@ -55,7 +56,17 @@ class TSI():
                     self.tsi_ema_value = self.tsi_ema.Current.Value
                     self.is_ready = True
         
-        
+    def Bull_Or_Bear(self, bar):
+        if self.is_ready:
+            if self.tsi_value > self.tsi_ema_value:
+                self.Bullish = True
+                self.Bearish = False
+            elif self.tsi_value < self.tsi_ema_value:
+                self.Bearish = True
+                self.Bullish = False
+            else:
+                self.Bullish = False
+                self.Bearish = False
         
 
                 

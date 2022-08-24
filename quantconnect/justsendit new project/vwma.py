@@ -14,7 +14,7 @@ class VWMA():
         self.Length = length
 
         self.vwma = deque(maxlen=self.Length)
-        self.vwma_value = None
+        self.value = None
         self.is_ready = False
 
         self.sma_v = SimpleMovingAverage(self.Length)
@@ -28,7 +28,7 @@ class VWMA():
         self.sma_cv.Update(IndicatorDataPoint(bartime, volume * value))
         
         if self.sma_cv.IsReady:
-            self.vwma_value = self.sma_cv.Current.Value / self.sma_v.Current.Value
+            self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
             self.vwma.append(self.sma_cv.Current.Value / self.sma_v.Current.Value)
         
         if len(self.vwma) == self.Length:
@@ -41,7 +41,7 @@ class VWMA():
         # self.sma_cv.Update(IndicatorDataPoint(bar.EndTime, bar.Volume * bar.Close))
         
         # if self.sma_cv.IsReady:
-        #     self.vwma_value = self.sma_cv.Current.Value / self.sma_v.Current.Value
+        #     self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
         #     self.vwma.append(self.sma_cv.Current.Value / self.sma_v.Current.Value)
         
         # if len(self.vwma) == self.Length:
