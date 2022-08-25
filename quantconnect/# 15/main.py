@@ -22,7 +22,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetCash(100000)  # Set Strategy Cash
-        self.Crypto = self.AddCrypto("BTCUSD", Resolution.Hour, Market.GDAX).Symbol
+        self.Crypto = self.AddCrypto("BTCUSDT", Resolution.Hour, Market.GDAX).Symbol
         
         self.VOL_MA_LENGTH = config.VOL_MA
         self.VWMA1_LENGTH = config.VWMA_FASTEST
@@ -244,7 +244,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         self.Log(f'Start training at {self.Time}')
         # Use the historical data to train the machine learning model
-        history = self.History(["ADAUSD"], 200, Resolution.Daily)
+        history = self.History(["BTCUSDT"], 200, Resolution.Daily)
 
         # ML code:
         pass
