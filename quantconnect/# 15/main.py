@@ -146,7 +146,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         ewo_lb.Update_Value(bar.EndTime, 
                             bar.Close)
         if vwap.IsReady:
-            vwap.Update(IndicatorDataPoint(bar.EndTime,
+            vwap.Update(IBaseDataBar(bar.EndTime,
                                             bar.Close))
         
         if vol_ma.is_ready and \

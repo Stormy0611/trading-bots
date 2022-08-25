@@ -31,9 +31,9 @@ class TSI():
 
 
     def Double_Smooth(self, src, bartime):
-        self.fist_smooth_ema.Update(IndicatorDataPoint(bartime, src))
+        self.fist_smooth_ema.Update(IBaseDataBar(bartime, src))
         if self.fist_smooth_ema.IsReady:
-            self.double_fist_smooth_ema.Update(IndicatorDataPoint(bartime, self.fist_smooth_ema.Current.Value))
+            self.double_fist_smooth_ema.Update(IBaseDataBar(bartime, self.fist_smooth_ema.Current.Value))
         if self.double_fist_smooth_ema.IsReady:
             return self.double_fist_smooth_ema.Current.values
         else:
@@ -50,7 +50,7 @@ class TSI():
             if double_smoothed_abs_pc * double_smoothed_pc:
                 self.tsi_value = 100 * (double_smoothed_pc / double_smoothed_abs_pc)
                 self.tsi.append(self.tsi_value)
-                self.tsi_ema.Update(IndicatorDataPoint(bartime, self.tsi_value))
+                self.tsi_ema.Update(IBaseDataBar(bartime, self.tsi_value))
                 if self.tsi_ema.IsReady:
                     self.tsi_ema_value = self.tsi_ema.Current.Value
                     self.is_ready = True

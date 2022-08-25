@@ -25,8 +25,8 @@ class EWO_LB():
         self.Bearish = False
 
     def Update_Value(self, bartime, value):   # value = close
-        self.ema_short.Update(IndicatorDataPoint(bartime, value))
-        self.ema_long.Update(IndicatorDataPoint(bartime, value))
+        self.ema_short.Update(IBaseDataBar(bartime, value))
+        self.ema_long.Update(IBaseDataBar(bartime, value))
         if self.ema_long.IsReady:
             self.ewo_value = self.ema_short.Current.Value - self.ema_long.Current.Value
             self.is_ready = True
