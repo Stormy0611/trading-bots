@@ -23,7 +23,7 @@ class KRI():
         self.Bearish = False
 
 
-    def Update(self, bartime, value): # value = close
+    def Update_Value(self, bartime, value): # value = close
     
         self.sma.Update(IndicatorDataPoint(bartime, value))
         if self.sma.IsReady:

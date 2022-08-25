@@ -19,7 +19,8 @@ class PGO_LB():
         # self.short = deque(maxlen=self.Length_short)
         self.sma = SimpleMovingAverage(self.Length)
         self.ema = ExponentialMovingAverage(self.Length)
-        self.tr = TrueRange()
+        self.Crypto = self.AddCrypto("BTCUSD", Resolution.Hour, Market.GDAX).Symbol
+        self.tr = TR(self.Crypto, Resolution.Hour)
         self.value = None
 
       
@@ -27,7 +28,7 @@ class PGO_LB():
         self.Bullish = False
         self.Bearish = False
 
-    def Update(self, bartime, value):
+    def Update_Value(self, bartime, value):
         self.tr.Update(IndicatorDataPoint(bartime, value))
         if self.tr.IsReady:
             self.sma.Update(IndicatorDataPoint(bartime, value))

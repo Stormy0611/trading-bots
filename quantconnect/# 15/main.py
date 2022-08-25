@@ -22,7 +22,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetCash(100000)  # Set Strategy Cash
-        self.Crypto = self.AddCrypto("ADAUSD", Resolution.Hour, Market.GDAX).Symbol
+        self.Crypto = self.AddCrypto("BTCUSD", Resolution.Hour, Market.GDAX).Symbol
         
         self.VOL_MA_LENGTH = config.VOL_MA
         self.VWMA1_LENGTH = config.VWMA_FASTEST
@@ -69,6 +69,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Indicators['VWAP'] = VolumeWeightedAveragePriceIndicator(self.VWAP_LENGTH)
         self.WarmUpIndicator(self.Crypto, self.Indicators['VWAP'], timedelta(hours=1))
 
+        self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
         
         # self.lambda_func = lambda x: (x.High + x.Low) / 2.0
 
@@ -95,18 +96,14 @@ class LogicalSkyBlueDog(QCAlgorithm):
         # Set TrainingMethod to be executed at 8:00 am every Sunday
         self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8 , 0), self.TrainingMethod)
 
-
-
-    
-
-    def OnData(self, data: Slice):
+    def IndicatorUpdate(self, bar):
         
-        # self.Debug(data.Bars[self.Crypto].EndTime)
-        # self.Debug(data.Bars[self.Crypto].Close)
-        # self.Debug(data.Bars[self.Crypto].Open)
-        # self.Debug(data.Bars[self.Crypto].High)
-        # self.Debug(data.Bars[self.Crypto].Low)
-        # self.Debug(data.Bars[self.Crypto].Volume)
+        # self.Debug(bar.EndTime)
+        # self.Debug(bar.Close)
+        # self.Debug(bar.Open)
+        # self.Debug(bar.High)
+        # self.Debug(bar.Low)
+        # self.Debug(bar.Volume)
         
         vol_ma = self.Indicators['VOL_MA']
         vwma1 = self.Indicators['VWMA1']
@@ -122,37 +119,36 @@ class LogicalSkyBlueDog(QCAlgorithm):
         ewo_lb = self.Indicators['EWO_LB']
         vwap = self.Indicators['VWAP']
         
-        vol_ma.Update(data.Bars[self.Crypto].Volume)
-        vwma1.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Volume,
-                     data.Bars[self.Crypto].Close)
-        vwma2.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Volume,
-                     data.Bars[self.Crypto].Close)
-        vwma3.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Volume,
-                     data.Bars[self.Crypto].Close)
-        vwma4.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Volume,
-                     data.Bars[self.Crypto].Close)
-        vol_osc.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Volume)
-        pgo_lb.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Close)
-        tsi.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Close)
-        rvgi.Update(data.Bars[self.Crypto])
-        stc.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Close)
-        kri.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Close)
-        ewo_lb.Update(data.Bars[self.Crypto].EndTime, 
-                     data.Bars[self.Crypto].Close)
+        vol_ma.Update_Value(bar.Volume)
+        vwma1.Update_Value(bar.EndTime, 
+                            bar.Volume,
+                            bar.Close)
+        vwma2.Update_Value(bar.EndTime, 
+                            bar.Volume,
+                            bar.Close)
+        vwma3.Update_Value(bar.EndTime, 
+                            bar.Volume,
+                            bar.Close)
+        vwma4.Update_Value(bar.EndTime, 
+                            bar.Volume,
+                            bar.Close)
+        vol_osc.Update_Value(bar.EndTime, 
+                            bar.Volume)        
+        pgo_lb.Update_Value(bar.EndTime, 
+                            bar.Close)
+        tsi.Update_Value(bar.EndTime, 
+                            bar.Close)
+        rvgi.Update_Value(bar)
+        stc.Update_Value(bar.EndTime, 
+                        bar.Close)
+        kri.Update_Value(bar.EndTime, 
+                        bar.Close)
+        ewo_lb.Update_Value(bar.EndTime, 
+                            bar.Close)
         if vwap.IsReady:
-            vwap.Update(IndicatorDataPoint(
-                data.Bars[self.Crypto].EndTime,
-                data.Bars[self.Crypto].Close))
-            
+            vwap.Update(IndicatorDataPoint(bar.EndTime,
+                                            bar.Close))
+        
         if vol_ma.is_ready and \
             vwma2.is_ready and \
             vwma3.is_ready and \
@@ -162,11 +158,37 @@ class LogicalSkyBlueDog(QCAlgorithm):
             ewo_lb.is_ready and \
             kri.is_ready and \
             pgo_lb.is_ready:
-                vol_ma.Bull_Or_Bear(data.Bars[self.Crypto])
-                vol_osc.Bull_Or_Bear(data.Bars[self.Crypto])
-                pgo_lb.Bull_Or_Bear(data.Bars[self.Crypto])
-                kri.Bull_Or_Bear(data.Bars[self.Crypto])
-                ewo_lb.Bull_Or_Bear(data.Bars[self.Crypto])
+                vol_ma.Bull_Or_Bear(bar)
+                vol_osc.Bull_Or_Bear(bar)
+                pgo_lb.Bull_Or_Bear(bar)
+                kri.Bull_Or_Bear(bar)
+                ewo_lb.Bull_Or_Bear(bar)
+           
+
+    def OnData(self, data: Slice):
+        
+        # self.Debug(data.Bars[self.Crypto].EndTime)
+        # self.Debug(data.Bars[self.Crypto].Close)
+        # self.Debug(data.Bars[self.Crypto].Open)
+        # self.Debug(data.Bars[self.Crypto].High)
+        # self.Debug(data.Bars[self.Crypto].Low)
+        # self.Debug(data.Bars[self.Crypto].Volume)
+        
+                vol_ma = self.Indicators['VOL_MA']
+                vwma1 = self.Indicators['VWMA1']
+                vwma2 = self.Indicators['VWMA2']
+                vwma3 = self.Indicators['VWMA3']
+                vwma4 = self.Indicators['VWMA4']
+                vol_osc = self.Indicators['VOL_OSC']
+                pgo_lb = self.Indicators['PGO_LB']
+                tsi = self.Indicators['TSI']
+                rvgi = self.Indicators['RVGI']
+                stc = self.Indicators['STC']
+                kri = self.Indicators['KRI']
+                ewo_lb = self.Indicators['EWO_LB']
+                vwap = self.Indicators['VWAP']
+            
+        
                 if vol_ma.Bullish and \
                    vol_osc.Bullish and \
                    pgo_lb.Bullish and \

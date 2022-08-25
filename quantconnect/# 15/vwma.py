@@ -23,7 +23,7 @@ class VWMA():
         self.Bullish = False
         self.Bearish = False
 
-    def Update(self, bartime, volume, value):
+    def Update_Value(self, bartime, volume, value):
         self.sma_v.Update(IndicatorDataPoint(bartime, volume))
         self.sma_cv.Update(IndicatorDataPoint(bartime, volume * value))
         

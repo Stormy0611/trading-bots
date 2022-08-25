@@ -1,5 +1,4 @@
 #region imports
-from gc import is_tracked
 from AlgorithmImports import *
 #endregion
 import config
@@ -41,7 +40,7 @@ class TSI():
             return 0
         
 
-    def Update(self, bartime, value):
+    def Update_Value(self, bartime, value):
         
         self.close.append(value)
         if len(self.close) == 2:

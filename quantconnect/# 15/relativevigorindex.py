@@ -27,7 +27,7 @@ class RVGI():
         self.Bearish = False
         
 
-    def Update(self, bar):
+    def Update_Value(self, bar):
         
         swma_co_value = self.swma_co.get_value(bar.Close - bar.Open)
         swma_hl_value = self.swma_hl.get_value(bar.High - bar.Low)

@@ -24,7 +24,7 @@ class EWO_LB():
         self.Bullish = False
         self.Bearish = False
 
-    def Update(self, bartime, value):   # value = close
+    def Update_Value(self, bartime, value):   # value = close
         self.ema_short.Update(IndicatorDataPoint(bartime, value))
         self.ema_long.Update(IndicatorDataPoint(bartime, value))
         if self.ema_long.IsReady:

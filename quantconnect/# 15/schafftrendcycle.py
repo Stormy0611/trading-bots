@@ -47,7 +47,7 @@ class STC():
 
         
 
-    def Update(self, bartime, value):
+    def Update_Value(self, bartime, value):
         
         self.fastMA.Update(IndicatorDataPoint(bartime, value))
         self.slowMA.Update(IndicatorDataPoint(bartime, value))

@@ -27,7 +27,7 @@ class VOL_OSC():
         self.Bullish = False
         self.Bearish = False
 
-    def Update(self, bartime, volume):
+    def Update_Value(self, bartime, volume):
         self.ema_short.Update(IndicatorDataPoint(bartime, volume))
         self.ema_long.Update(IndicatorDataPoint(bartime, volume))
         if self.ema_long.IsReady:
