@@ -20,7 +20,7 @@ class PGO_LB():
         self.sma = SimpleMovingAverage(self.Length)
         self.ema = ExponentialMovingAverage(self.Length)
         self.Crypto = algorithm.AddCrypto("BTCUSD", Resolution.Hour, Market.GDAX).Symbol
-        self.tr = TR(self.Crypto, Resolution.Hour)
+        self.tr = TrueRange(self.Crypto, Resolution.Hour)
         self.value = None
 
       
