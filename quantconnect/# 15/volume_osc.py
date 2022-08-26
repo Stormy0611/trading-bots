@@ -28,8 +28,8 @@ class VOL_OSC():
         self.Bearish = False
 
     def Update_Value(self, bartime, volume):
-        self.ema_short.Update(IBaseDataBar(bartime, volume))
-        self.ema_long.Update(IBaseDataBar(bartime, volume))
+        self.ema_short.Update(IndicatorDataPoint(bartime, volume))
+        self.ema_long.Update(IndicatorDataPoint(bartime, volume))
         if self.ema_long.IsReady:
             self.value = 100 * (self.ema_short.Current.Value - self.ema_long.Current.Value) / self.ema_long.Current.Value
             self.is_ready = True

@@ -25,7 +25,7 @@ class KRI():
 
     def Update_Value(self, bartime, value): # value = close
     
-        self.sma.Update(IBaseDataBar(bartime, value))
+        self.sma.Update(IndicatorDataPoint(bartime, value))
         if self.sma.IsReady:
             self.kri_value = 100 * (value - self.sma.Current.Value) / self.sma.Current.Value
             self.is_ready = True

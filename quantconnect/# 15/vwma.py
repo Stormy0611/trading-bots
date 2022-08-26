@@ -24,8 +24,8 @@ class VWMA():
         self.Bearish = False
 
     def Update_Value(self, bartime, volume, value):
-        self.sma_v.Update(IBaseDataBar(bartime, volume))
-        self.sma_cv.Update(IBaseDataBar(bartime, volume * value))
+        self.sma_v.Update(IndicatorDataPoint(bartime, volume))
+        self.sma_cv.Update(IndicatorDataPoint(bartime, volume * value))
         
         if self.sma_cv.IsReady:
             self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
@@ -37,8 +37,8 @@ class VWMA():
 
     def Bull_Or_Bear(self, bar, color):
         pass
-        # self.sma_v.Update(IBaseDataBar(bar.EndTime, bar.Volume))
-        # self.sma_cv.Update(IBaseDataBar(bar.EndTime, bar.Volume * bar.Close))
+        # self.sma_v.Update(IndicatorDataPoint(bar.EndTime, bar.Volume))
+        # self.sma_cv.Update(IndicatorDataPoint(bar.EndTime, bar.Volume * bar.Close))
         
         # if self.sma_cv.IsReady:
         #     self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value

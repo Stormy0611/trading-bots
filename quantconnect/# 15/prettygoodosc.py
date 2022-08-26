@@ -29,20 +29,20 @@ class PGO_LB():
         self.Bearish = False
 
     def Update_Value(self, bartime, value):
-        self.tr.Update(IBaseDataBar(bartime, value))
+        self.tr.Update(IndicatorDataPoint(bartime, value))
         if self.tr.IsReady:
-            self.sma.Update(IBaseDataBar(bartime, value))
-            self.ema.Update(IBaseDataBar(bartime, self.tr.Current.Value))
+            self.sma.Update(IndicatorDataPoint(bartime, value))
+            self.ema.Update(IndicatorDataPoint(bartime, self.tr.Current.Value))
         if self.ema.IsReady:
             self.value = (value - self.sma.Current.Value) / self.ema.Current.Value
             self.is_ready = True
         
 
     def Bull_Or_Bear(self, bar):
-        # self.tr.Update(IBaseDataBar(bar.EndTime))
+        # self.tr.Update(IndicatorDataPoint(bar.EndTime))
         # if self.tr.IsReady:
-        #     self.sma.Update(IBaseDataBar(bar.EndTime, bar.Close))
-        #     self.ema.Update(IBaseDataBar(bar.EndTime, self.tr.Current.Value))
+        #     self.sma.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
+        #     self.ema.Update(IndicatorDataPoint(bar.EndTime, self.tr.Current.Value))
         # if self.ema.IsReady:
         #     self.value = (bar.Close - self.sma.Current.Value) / self.ema.Current.Value
         #     self.is_ready = True

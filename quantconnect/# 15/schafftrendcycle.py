@@ -49,8 +49,8 @@ class STC():
 
     def Update_Value(self, bartime, value):
         
-        self.fastMA.Update(IBaseDataBar(bartime, value))
-        self.slowMA.Update(IBaseDataBar(bartime, value))
+        self.fastMA.Update(IndicatorDataPoint(bartime, value))
+        self.slowMA.Update(IndicatorDataPoint(bartime, value))
         if self.slowMA.IsReady:
             self.d_fs_value = self.fastMA.Current.Value - self.slowMA.Current.Value
             self.d_fs.append(self.d_fs_value)

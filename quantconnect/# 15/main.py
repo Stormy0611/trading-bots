@@ -71,6 +71,18 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
         
+        self.Warming_Up = True
+
+        self.Warm_Up_Consolidator = TradeBarConsolidator(timedelta(hours=1))
+        self.SubscriptionManager.AddConsolidator(self.Crypto, self.Warm_Up_Consolidator)
+        self.Warm_Up_Consolidator.DataConsolidated += self.MA_ATR_RSI_WARMUP
+
+     
+
+        history = map(lambda x: x[self.Crypto],self.History(1100 , Resolution.Hour))
+        for row in history:
+            self.Warm_Up_Consolidator.Update(row)
+        
         # self.lambda_func = lambda x: (x.High + x.Low) / 2.0
 
         # self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
@@ -96,14 +108,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         # Set TrainingMethod to be executed at 8:00 am every Sunday
         self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8 , 0), self.TrainingMethod)
 
-    def IndicatorUpdate(self, bar):
-        
-        # self.Debug(bar.EndTime)
-        # self.Debug(bar.Close)
-        # self.Debug(bar.Open)
-        # self.Debug(bar.High)
-        # self.Debug(bar.Low)
-        # self.Debug(bar.Volume)
+    def MA_ATR_RSI_WARMUP(self, sender, bar):
         
         vol_ma = self.Indicators['VOL_MA']
         vwma1 = self.Indicators['VWMA1']
@@ -118,51 +123,122 @@ class LogicalSkyBlueDog(QCAlgorithm):
         kri = self.Indicators['KRI']
         ewo_lb = self.Indicators['EWO_LB']
         vwap = self.Indicators['VWAP']
-        
+            
         vol_ma.Update_Value(bar.Volume)
         vwma1.Update_Value(bar.EndTime, 
-                            bar.Volume,
-                            bar.Close)
+                                bar.Volume,
+                                bar.Close)
         vwma2.Update_Value(bar.EndTime, 
-                            bar.Volume,
-                            bar.Close)
+                                bar.Volume,
+                                bar.Close)
         vwma3.Update_Value(bar.EndTime, 
-                            bar.Volume,
-                            bar.Close)
+                                bar.Volume,
+                                bar.Close)
         vwma4.Update_Value(bar.EndTime, 
-                            bar.Volume,
-                            bar.Close)
+                                bar.Volume,
+                                bar.Close)
         vol_osc.Update_Value(bar.EndTime, 
-                            bar.Volume)        
+                                bar.Volume)        
         pgo_lb.Update_Value(bar.EndTime, 
-                            bar.Close)
+                                bar.Close)
         tsi.Update_Value(bar.EndTime, 
-                            bar.Close)
+                                bar.Close)
         rvgi.Update_Value(bar)
         stc.Update_Value(bar.EndTime, 
-                        bar.Close)
-        kri.Update_Value(bar.EndTime, 
-                        bar.Close)
-        ewo_lb.Update_Value(bar.EndTime, 
                             bar.Close)
+        kri.Update_Value(bar.EndTime, 
+                            bar.Close)
+        ewo_lb.Update_Value(bar.EndTime, 
+                                bar.Close)
         if vwap.IsReady:
-            vwap.Update(IBaseDataBar(bar.EndTime,
-                                            bar.Close))
-        
+                vwap.Update(IndicatorDataPoint(bar.EndTime,
+                                                bar.Close))
+            
         if vol_ma.is_ready and \
-            vwma2.is_ready and \
-            vwma3.is_ready and \
-            vwma4.is_ready and \
-            vwap.IsReady and \
-            vol_osc.is_ready and \
-            ewo_lb.is_ready and \
-            kri.is_ready and \
-            pgo_lb.is_ready:
-                vol_ma.Bull_Or_Bear(bar)
-                vol_osc.Bull_Or_Bear(bar)
-                pgo_lb.Bull_Or_Bear(bar)
-                kri.Bull_Or_Bear(bar)
-                ewo_lb.Bull_Or_Bear(bar)
+                vwma2.is_ready and \
+                vwma3.is_ready and \
+                vwma4.is_ready and \
+                vwap.IsReady and \
+                vol_osc.is_ready and \
+                ewo_lb.is_ready and \
+                kri.is_ready and \
+                pgo_lb.is_ready:
+                    vol_ma.Bull_Or_Bear(bar)
+                    vol_osc.Bull_Or_Bear(bar)
+                    pgo_lb.Bull_Or_Bear(bar)
+                    kri.Bull_Or_Bear(bar)
+                    ewo_lb.Bull_Or_Bear(bar)
+
+        self.Warming_Up = False
+    
+
+    def IndicatorUpdate(self, bar):
+        
+        # self.Debug(bar.EndTime)
+        # self.Debug(bar.Close)
+        # self.Debug(bar.Open)
+        # self.Debug(bar.High)
+        # self.Debug(bar.Low)
+        # self.Debug(bar.Volume)
+        if not self.Warming_Up:
+            vol_ma = self.Indicators['VOL_MA']
+            vwma1 = self.Indicators['VWMA1']
+            vwma2 = self.Indicators['VWMA2']
+            vwma3 = self.Indicators['VWMA3']
+            vwma4 = self.Indicators['VWMA4']
+            vol_osc = self.Indicators['VOL_OSC']
+            pgo_lb = self.Indicators['PGO_LB']
+            tsi = self.Indicators['TSI']
+            rvgi = self.Indicators['RVGI']
+            stc = self.Indicators['STC']
+            kri = self.Indicators['KRI']
+            ewo_lb = self.Indicators['EWO_LB']
+            vwap = self.Indicators['VWAP']
+            
+            vol_ma.Update_Value(bar.Volume)
+            vwma1.Update_Value(bar.EndTime, 
+                                bar.Volume,
+                                bar.Close)
+            vwma2.Update_Value(bar.EndTime, 
+                                bar.Volume,
+                                bar.Close)
+            vwma3.Update_Value(bar.EndTime, 
+                                bar.Volume,
+                                bar.Close)
+            vwma4.Update_Value(bar.EndTime, 
+                                bar.Volume,
+                                bar.Close)
+            vol_osc.Update_Value(bar.EndTime, 
+                                bar.Volume)        
+            pgo_lb.Update_Value(bar.EndTime, 
+                                bar.Close)
+            tsi.Update_Value(bar.EndTime, 
+                                bar.Close)
+            rvgi.Update_Value(bar)
+            stc.Update_Value(bar.EndTime, 
+                            bar.Close)
+            kri.Update_Value(bar.EndTime, 
+                            bar.Close)
+            ewo_lb.Update_Value(bar.EndTime, 
+                                bar.Close)
+            if vwap.IsReady:
+                vwap.Update(IndicatorDataPoint(bar.EndTime,
+                                                bar.Close))
+            
+            if vol_ma.is_ready and \
+                vwma2.is_ready and \
+                vwma3.is_ready and \
+                vwma4.is_ready and \
+                vwap.IsReady and \
+                vol_osc.is_ready and \
+                ewo_lb.is_ready and \
+                kri.is_ready and \
+                pgo_lb.is_ready:
+                    vol_ma.Bull_Or_Bear(bar)
+                    vol_osc.Bull_Or_Bear(bar)
+                    pgo_lb.Bull_Or_Bear(bar)
+                    kri.Bull_Or_Bear(bar)
+                    ewo_lb.Bull_Or_Bear(bar)
            
 
     def OnData(self, data: Slice):
