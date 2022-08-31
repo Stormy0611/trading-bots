@@ -52,10 +52,10 @@ class VOL_OSC():
             else:
                 barcolor = "RED"
 
-            if barcolor == "GREEN" and bar.Volume > self.volume_ma_value:
+            if barcolor == "GREEN" and bar.Volume > self.value:
                 self.Bullish = True
                 self.Bearish = False
-            elif barcolor == "RED" and bar.Volume < self.volume_ma_value:
+            elif barcolor == "RED" and bar.Volume < self.value:
                 self.Bullish = False
                 self.Bearish = True
             else:

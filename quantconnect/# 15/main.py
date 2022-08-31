@@ -22,7 +22,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetCash(100000)  # Set Strategy Cash
-        self.Crypto = self.AddCrypto("ETHUSD", Resolution.Hour, Market.GDAX).Symbol
+        self.Crypto = self.AddCrypto("BTCUSDT", Resolution.Hour, Market.GDAX).Symbol
         
         self.VOL_MA_LENGTH = config.VOL_MA
         self.VWMA1_LENGTH = config.VWMA_FASTEST
@@ -147,14 +147,13 @@ class LogicalSkyBlueDog(QCAlgorithm):
         rvgi.Update_Value(bar)
         stc.Update_Value(bar.EndTime, 
                             bar.Close)
-        self.Debug(stc.value)
-        # kri.Update_Value(bar.EndTime, 
-        #                     bar.Close)
-        # ewo_lb.Update_Value(bar.EndTime, 
-        #                         bar.Close)
-        # # if vwap.IsReady:
-        # vwap.Update(IndicatorDataPoint(bar.EndTime,
-        #                                         bar.Close))
+        kri.Update_Value(bar.EndTime, 
+                            bar.Close)
+        ewo_lb.Update_Value(bar.EndTime, 
+                                bar.Close)
+        # if vwap.IsReady:
+        vwap.Update(bar)
+        # self.Debug(vwap.Current.Value)
             
         if vol_ma.is_ready and \
                 vwma2.is_ready and \
@@ -231,7 +230,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         self.Log(f'Start training at {self.Time}')
         # Use the historical data to train the machine learning model
-        history = self.History(["ETHUSD"], 200, Resolution.Daily)
+        history = self.History(self.Crypto, 200, Resolution.Daily)
         # ML code:
         pass
     
