@@ -15,7 +15,7 @@ class RVGI():
 
         self.rvgi_n = deque(maxlen=self.Length)
         self.rvgi_q = deque(maxlen=self.Length)
-        self.rvgi_value = None
+        self.value = None
         self.is_ready = False
         
         self.swma_co = SWMA(algorithm)
@@ -29,24 +29,25 @@ class RVGI():
 
     def Update_Value(self, bar):
         
-        swma_co_value = self.swma_co.get_value(bar.Close - bar.Open)
-        swma_hl_value = self.swma_hl.get_value(bar.High - bar.Low)
-        if swma_co_value and swma_hl_value:
-            self.rvgi_q.append(swma_co_value)
-            self.rvgi_n.append(swma_hl_value)
+        self.swma_co.Update_Value(bar.Close - bar.Open)
+        self.swma_hl.Update_Value(bar.High - bar.Low)
+        if self.swma_co.is_ready and self.swma_hl.is_ready:
+            self.rvgi_q.appendleft(self.swma_co.value)
+            self.rvgi_n.appendleft(self.swma_hl.value)
         
         if len(self.rvgi_n) == self.Length:
-            self.rvgi_value = sum(self.rvgi_q) / sum(self.rvgi_n)
-            self.sig_value = self.swma_rvgi.get_value(self.rvgi_value)
-            if self.sig_value:
+            self.value = sum(self.rvgi_q) / sum(self.rvgi_n)
+            self.swma_rvgi.Update_Value(self.value)
+            if self.swma_rvgi.is_ready:
+                self.sig_value = self.swma_rvgi.value
                 self.is_ready = True
         
-    def Bull_Or_Bear(self, bar):
+    def Bull_Or_Bear(self, bar = None):
         if self.is_ready:
-            if self.rvgi_value > self.sig_value:
+            if self.value > self.sig_value:
                 self.Bullish = True
                 self.Bearish = False
-            elif self.rvgi_value < self.sig_value:
+            elif self.value < self.sig_value:
                 self.Bullish = False
                 self.Bearish = True
             else:

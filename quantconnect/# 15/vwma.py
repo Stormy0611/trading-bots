@@ -12,8 +12,9 @@ class VWMA():
     def __init__(self, algorithm, length):
 
         self.Length = length
+        self.algorithm = algorithm
 
-        self.vwma = deque(maxlen=self.Length)
+        # self.vwma = deque(maxlen=self.Length)
         self.value = None
         self.is_ready = False
 
@@ -29,10 +30,11 @@ class VWMA():
         
         if self.sma_cv.IsReady:
             self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
-            self.vwma.append(self.sma_cv.Current.Value / self.sma_v.Current.Value)
-        
-        if len(self.vwma) == self.Length:
             self.is_ready = True
+            # self.vwma.appendleft(self.sma_cv.Current.Value / self.sma_v.Current.Value)
+        
+        # if len(self.vwma) == self.Length:
+            # self.is_ready = True
             
 
     def Bull_Or_Bear(self, bar, color):

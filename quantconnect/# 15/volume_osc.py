@@ -13,7 +13,8 @@ class VOL_OSC():
 
         self.Length_short = short
         self.Length_long = long
-
+        self.algorithm = algorithm
+        
         # self.volume_osc = deque(maxlen=2)
         self.is_ready = False
         # self.short = deque(maxlen=self.Length_short)

@@ -12,6 +12,7 @@ class PGO_LB():
     def __init__(self, algorithm, length):
 
         self.Length = length
+        self.algorithm = algorithm
 
         # self.pgo_osc = deque(maxlen=self.Length)
         self.is_ready = False
@@ -28,7 +29,7 @@ class PGO_LB():
         self.Bullish = False
         self.Bearish = False
 
-    def Update_Value(self, bartime, value):
+    def Update_Value(self, bartime, value):     # value = close
         self.tr.Update(IndicatorDataPoint(bartime, value))
         if self.tr.IsReady:
             self.sma.Update(IndicatorDataPoint(bartime, value))
@@ -38,7 +39,7 @@ class PGO_LB():
             self.is_ready = True
         
 
-    def Bull_Or_Bear(self, bar):
+    def Bull_Or_Bear(self, bar = None):
         # self.tr.Update(IndicatorDataPoint(bar.EndTime))
         # if self.tr.IsReady:
         #     self.sma.Update(IndicatorDataPoint(bar.EndTime, bar.Close))

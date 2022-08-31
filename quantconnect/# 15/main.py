@@ -22,7 +22,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetCash(100000)  # Set Strategy Cash
-        self.Crypto = self.AddCrypto("BTCUSDT", Resolution.Hour, Market.GDAX).Symbol
+        self.Crypto = self.AddCrypto("ETHUSD", Resolution.Hour, Market.GDAX).Symbol
         
         self.VOL_MA_LENGTH = config.VOL_MA
         self.VWMA1_LENGTH = config.VWMA_FASTEST
@@ -67,9 +67,9 @@ class LogicalSkyBlueDog(QCAlgorithm):
                                     length=self.KRI_LENGTH)
         self.Indicators['EWO_LB'] = EWO_LB(self)
         self.Indicators['VWAP'] = VolumeWeightedAveragePriceIndicator(self.VWAP_LENGTH)
-        self.WarmUpIndicator(self.Crypto, self.Indicators['VWAP'], timedelta(hours=1))
+        # self.WarmUpIndicator(self.Crypto, self.Indicators['VWAP'], timedelta(hours=1))
 
-        self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
+        # self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
         
         self.Warming_Up = True
 
@@ -124,7 +124,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         ewo_lb = self.Indicators['EWO_LB']
         vwap = self.Indicators['VWAP']
             
-        vol_ma.Update_Value(bar.Volume)
+        # vol_ma.Update_Value(bar.Volume)
         # vwma1.Update_Value(bar.EndTime, 
         #                         bar.Volume,
         #                         bar.Close)
@@ -150,8 +150,8 @@ class LogicalSkyBlueDog(QCAlgorithm):
         #                     bar.Close)
         # ewo_lb.Update_Value(bar.EndTime, 
         #                         bar.Close)
-        # if vwap.IsReady:
-        #         vwap.Update(IndicatorDataPoint(bar.EndTime,
+        # # if vwap.IsReady:
+        # vwap.Update(IndicatorDataPoint(bar.EndTime,
         #                                         bar.Close))
             
         if vol_ma.is_ready and \
@@ -321,7 +321,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Log(f'Start training at {self.Time}')
         # Use the historical data to train the machine learning model
         history = self.History(["BTCUSDT"], 200, Resolution.Daily)
-
+        self.Debug(history)
         # ML code:
         pass
     

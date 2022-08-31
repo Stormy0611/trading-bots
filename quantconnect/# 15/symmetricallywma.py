@@ -13,13 +13,16 @@ class SWMA():
 
         self.swma = deque(maxlen=4)
         self.value = None
+        
+        self.algorithm = algorithm
+        
         self.is_ready = False
 
         self.Bullish = False
         self.Bearish = False
 
     def Update_Value(self, src):
-        self.swma.append(src)
+        self.swma.appendleft(src)
         if len(self.swma) == 4:
             self.value = (self.swma[0] + self.swma[3] + 2 * (self.swma[2] + self.swma[1])) / 6
             self.is_ready = True

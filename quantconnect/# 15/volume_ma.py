@@ -23,7 +23,7 @@ class VOL_MA():
         self.Bearish = False
 
 
-    def Update_Value(self, value):
+    def Update_Value(self, value):      # value = volume
         self.volume_ma.appendleft(value)
 
         if len(self.volume_ma) == self.Length:
