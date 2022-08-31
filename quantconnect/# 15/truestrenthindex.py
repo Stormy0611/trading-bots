@@ -38,7 +38,7 @@ class TSI():
         if self.fist_smooth_ema.IsReady:
             self.double_fist_smooth_ema.Update(IndicatorDataPoint(bartime, self.fist_smooth_ema.Current.Value))
         if self.double_fist_smooth_ema.IsReady:
-            return self.double_fist_smooth_ema.Current.values
+            return self.double_fist_smooth_ema.Current.Value
         else:
             return 0
         

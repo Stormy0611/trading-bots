@@ -29,8 +29,9 @@ class VWMA():
         self.sma_cv.Update(IndicatorDataPoint(bartime, volume * value))
         
         if self.sma_cv.IsReady:
-            self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
-            self.is_ready = True
+            if self.sma_v.Current.Value:
+                self.value = self.sma_cv.Current.Value / self.sma_v.Current.Value
+                self.is_ready = True
             # self.vwma.appendleft(self.sma_cv.Current.Value / self.sma_v.Current.Value)
         
         # if len(self.vwma) == self.Length:

@@ -29,8 +29,9 @@ class PGO_LB():
         self.Bullish = False
         self.Bearish = False
 
-    def Update_Value(self, bartime, value):     # value = close
-        self.tr.Update(IndicatorDataPoint(bartime, value))
+
+    def Update_Value(self, bartime, value, bar):     # value = close
+        self.tr.Update(bar)
         if self.tr.IsReady:
             self.sma.Update(IndicatorDataPoint(bartime, value))
             self.ema.Update(IndicatorDataPoint(bartime, self.tr.Current.Value))
