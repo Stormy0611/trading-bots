@@ -17,7 +17,7 @@ class VOL_MA():
         self.value = None
         self.is_ready = False
 
-      
+        self.algorithm = algorithm
 
         self.Bullish = False
         self.Bearish = False
