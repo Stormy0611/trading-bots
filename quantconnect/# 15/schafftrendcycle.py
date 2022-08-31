@@ -60,11 +60,11 @@ class STC():
                 if CCCC > 0:
                     self.CCCCC.appendleft((self.d_fs_value - CCC) / CCCC * 100)
                 else:
-                    self.CCCCC.appendleft(self.CCCCC[0])
-                if self.DDD[0] == None:
+                    self.CCCCC.appendleft(self.CCCCC[1])
+                if self.DDD[1] == None:
                     self.DDD.appendleft(self.CCCCC[1])
                 else:
-                    self.DDD.appendleft(self.DDD[0] + self.AAA * (self.CCCCC[0] - self.DDD[0]))
+                    self.DDD.appendleft(self.DDD[1] + self.AAA * (self.CCCCC[0] - self.DDD[1]))
                 if len(self.DDD) == self.Length:
                     DDDD = min(self.DDD)
                     DDDDD = max(self.DDD) - DDDD
@@ -72,10 +72,10 @@ class STC():
                         self.DDDDDD.appendleft(self.DDD[0] - DDDD) / DDDDD * 100
                     else:
                         self.DDDDDD.appendleft(self.DDDDDD[0])
-                    if self.EEEEE[0] == None:
+                    if self.EEEEE[1] == None:
                         self.EEEEE.appendleft(self.DDDDDD[0])
                     else:
-                        self.EEEEE.appendleft(self.DDDDDD[0] + self.AAA * (self.DDDDDD[0] - self.EEEEE[0]))
+                        self.EEEEE.appendleft(self.EEEEE[1] + self.AAA * (self.DDDDDD[0] - self.EEEEE[1]))
                     self.value = self.EEEEE[0]
                     self.stc.appendleft(self.value)
                     if len(self.stc) == 2:
