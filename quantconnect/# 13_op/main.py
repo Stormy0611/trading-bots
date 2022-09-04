@@ -16,22 +16,23 @@ import tensorflow as tf
 
 class LogicalSkyBlueDog(QCAlgorithm):
 
-    def Initialize(self):
-        self.SetStartDate(2021, 1, 29)  # Set Start Date
-        self.SetCash(100000)  # Set Strategy Cash
-        self.Crypto = self.AddCrypto("ETHUSD", Resolution.Hour, Market.GDAX).Symbol
-        self.Indicators = {}
+    Indicators = {}
+    lambda_func = lambda x: (x.High + x.Low) / 2.0
+    SMMA_Slow_Length = None
+    SMMA_Fast_Length = None
+    SMMA_Fastest_Length = None
+
+    def init_properties(self):
+        self.SMMA_Slow_Length = om.smma_slow_length
+        self.SMMA_Fast_Length = om.smma_fast_length
+        self.SMMA_Fastest_Length = om.smma_fastest_length
         self.Indicators["DONCHIAN"] = donchian.Donchian_Ribbon(self)
         self.Indicators["TDI"] = tdi.TDI(self)
         self.Indicators["VOLATILITY"] = volatility.Volatility_Oscillator(self)
         self.Indicators["VOLUME"] = volume_ma.VOL_MA(self)
         self.Indicators["HEIKINASHI"] = heikinashi.Heikin_Ashi(self)
         self.Indicators["ULTRAPARROT"] = ultrafastparrot.UltraFastParrot(self)
-        self.lambda_func = lambda x: (x.High + x.Low) / 2.0
         # self.SMMA_Slow_Length = om.SMMA_SLOW_LENGTH
-        self.SMMA_Slow_Length = om.smma_slow_length
-        self.SMMA_Fast_Length = om.smma_fast_length
-        self.SMMA_Fastest_Length = om.smma_fastest_length
 
         self.sma_slow = SimpleMovingAverage(self.SMMA_Slow_Length)
         self.sma_fast = SimpleMovingAverage(self.SMMA_Fast_Length)
@@ -42,8 +43,16 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.WarmUpIndicator(self.Crypto, self.sma_fastest, timedelta(hours=1))
 
         self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
-        
-      
+
+        self.rsi_tdi = RelativeStrengthIndex(om.tdi_rsi)
+        self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
+
+
+
+    def Initialize(self):
+        self.SetStartDate(2021, 1, 29)  # Set Start Date
+        self.SetCash(100000)  # Set Strategy Cash
+        self.Crypto = self.AddCrypto("ETHUSD", Resolution.Hour, Market.GDAX).Symbol
 
         self.Macd = MovingAverageConvergenceDivergence(12, 26, 9)
         self.WarmUpIndicator(self.Crypto, self.Macd, timedelta(hours=1))
@@ -52,10 +61,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.SMMA_Fast = None
         self.SMMA_Fastest = None
 
-
-        self.rsi_tdi = RelativeStrengthIndex(om.tdi_rsi)
-        self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
-
+        
         if self.SMMA_Slow is None and self.sma_slow.IsReady:
             self.SMMA_Slow = self.sma_slow.Current.Value
         if self.SMMA_Fast is None and self.sma_fast.IsReady:
@@ -830,7 +836,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_DOWN = None
 
     def OnData(self, data: Slice):
-        # self.Debug("HERE")
+        self.Debug("HERE")
         volatility_osc = self.Indicators["VOLATILITY"]
         donchian_indie = self.Indicators["DONCHIAN"]
         TDI_indie = self.Indicators["TDI"]
@@ -858,6 +864,16 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
             if self.Portfolio[self.Crypto].UnrealizedProfitPercent < -0.05:
                 self.SetHoldings(self.Crypto, 0)
+
+    def TrainingMethod(self):
+
+        self.Log(f'Start training at {self.Time}')
+        # Use the historical data to train the machine learning model
+        history = self.History(["SPY"], 200, Resolution.Daily)
+
+        # ML code:
+        pass
+    ``
 #%%
 ##Run OnData function
 LogicalSkyBlueDog.OnData(data:Slice)
@@ -873,7 +889,7 @@ weights[16] = 0.01
 weights[17] = 0.01
 weights[19] = 0.01
 ##Convert array to tensor
-learning_rate = tf.constan(weights)
+learning_rate = tf.constant(weights)
 
 optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
 ##Train to minize the -target.
