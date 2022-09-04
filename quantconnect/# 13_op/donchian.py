@@ -9,7 +9,7 @@ class Donchian_Ribbon():
     
     def __init__(self, algorithm):
 
-        self.Donchian_Channel_Period = om.donchain_period
+        self.Donchian_Channel_Period = int(om.donchain_period)
         self.HH_LL_Period = 2
         self.Highest_High = deque(maxlen=self.HH_LL_Period)
         self.Lowest_Low = deque(maxlen=self.HH_LL_Period)

@@ -7,14 +7,13 @@ class UltraFastParrot():
 
 
     def __init__(self, algorithm):
-        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=om.signal_sigma, offset=om.signal_offset)
-        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=om.signal_sigma , offset=om.signal_offset)
-        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=om.signal_sigma , offset=om.signal_offset)
-        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=om.signal_sigma , offset=om.signal_offset)
-        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=om.signal_sigma , offset=om.signal_offset)
-        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=om.signal_sigma , offset=om.signal_offset)
-        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=om.signal_sigma , offset=om.signal_offset)
-
+        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
+        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=int(om.signal_sigma), offset=float(om.signal_offset))
         self.Previous_Close = deque(maxlen=2)
         self.PC = None
 

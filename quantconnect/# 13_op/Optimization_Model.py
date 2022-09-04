@@ -1,20 +1,20 @@
-import numpy as np
+# import numpy as np
 import tensorflow as tf
-import os
-from AlgorithmImports import *
-from collections import deque
-import config
-from datetime import *
-import statistics as stats 
-import time
+# import os
+# from AlgorithmImports import *
+# from collections import deque
+# import config
+# from datetime import *
+# import statistics as stats 
+# import time
 
-import donchian
-import volatility
-import tdi
-import volume_ma
-import heikinashi
-import ultrafastparrot
-from main import LogicalSkyBlueDog
+# import donchian
+# import volatility
+# import tdi
+# import volume_ma
+# import heikinashi
+# import ultrafastparrot
+# from main import LogicalSkyBlueDog
 #%%
  # These are parameters we should control to get max profit
 
@@ -29,7 +29,7 @@ volatility_period = tf.Variable(100, name = "volatility_period")
 tdi_rsi = tf.Variable(11, name = "tdi_rsi")
 band_length = tf.Variable(31, name = "band_length")
 fast_ma_on_rsi = tf.Variable(1, name = "fast_ma_on_rsi")
-slow_ma_on_rsi = tf.variable(9, name = "slow_ma_on_rsi")
+slow_ma_on_rsi = tf.Variable(9, name = "slow_ma_on_rsi")
 
 volume_ma_length = tf.Variable(40, name = "volume_ma_length")
 

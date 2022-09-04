@@ -11,7 +11,7 @@ class VOL_MA():
     
     def __init__(self, algorithm):
 
-        self.Length = om.volume_ma_length
+        self.Length = int(om.volume_ma_length)
 
         self.volume_ma = deque(maxlen=self.Length)
         self.volume_ma_value = None

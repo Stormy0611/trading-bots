@@ -9,7 +9,7 @@ class Volatility_Oscillator():
     
     def __init__(self, algorithm):
 
-        self.Length = om.volatility_period
+        self.Length = int(om.volatility_period)
         self.Spike = None
         self.Spike_Queue = deque(maxlen=self.Length)
         self.X = None

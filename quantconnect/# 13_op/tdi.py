@@ -12,9 +12,9 @@ class TDI():
 
        
 
-        self.Band_Length = om.band_length
-        self.Fast_MA_On_RSI = om.fast_ma_on_rsi
-        self.Slow_MA_On_RSI = om.slow_ma_on_rsi
+        self.Band_Length = int(om.band_length)
+        self.Fast_MA_On_RSI = int(om.fast_ma_on_rsi)
+        self.Slow_MA_On_RSI = int(om.slow_ma_on_rsi)
         self.algorithm = algorithm
         self.ma = deque(maxlen=self.Band_Length)
         self.ma_value = None

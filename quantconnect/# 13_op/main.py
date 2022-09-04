@@ -28,9 +28,9 @@ class LogicalSkyBlueDog(QCAlgorithm):
     Crypto = None
 
     def init_properties(self):
-        self.SMMA_Slow_Length = om.smma_slow_length
-        self.SMMA_Fast_Length = om.smma_fast_length
-        self.SMMA_Fastest_Length = om.smma_fastest_length
+        self.SMMA_Slow_Length = int(om.smma_slow_length)
+        self.SMMA_Fast_Length = int(om.smma_fast_length)
+        self.SMMA_Fastest_Length = int(om.smma_fastest_length)        
         self.Indicators["DONCHIAN"] = donchian.Donchian_Ribbon(self)
         self.Indicators["TDI"] = tdi.TDI(self)
         self.Indicators["VOLATILITY"] = volatility.Volatility_Oscillator(self)
@@ -49,7 +49,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
 
-        self.rsi_tdi = RelativeStrengthIndex(om.tdi_rsi)
+        self.rsi_tdi = RelativeStrengthIndex(int(om.tdi_rsi))
         self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
 
     def Initialize(self):
