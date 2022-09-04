@@ -17,6 +17,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
+        self.SetEndDate(2022, 8, 31)    # Set End Date
         self.SetCash(100000)  # Set Strategy Cash
         self.Crypto = self.AddCrypto("ETHUSD", Resolution.Hour, Market.GDAX).Symbol
         self.Indicators = {}
@@ -842,14 +843,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
         if volatility_osc.Bullish and donchian_indie.Color == "GREEN" and self.QQE_UP is not None and TDI_indie.Bullish:
             if not self.Portfolio[self.Crypto].IsLong:
                 self.SetHoldings(self.Crypto, 1)
-     
-
 
         if volatility_osc.Bearish and donchian_indie.Color == "RED" and self.QQE_DOWN is not None and TDI_indie.Bearish:
             if not self.Portfolio[self.Crypto].IsShort:
                 self.SetHoldings(self.Crypto, -1)
-
-       
 
         if self.Portfolio[self.Crypto].Invested:
             if self.Portfolio[self.Crypto].UnrealizedProfitPercent > 0.01:

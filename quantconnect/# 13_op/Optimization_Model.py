@@ -16,7 +16,7 @@ import heikinashi
 import ultrafastparrot
 from main import LogicalSkyBlueDog
 #%%
-## These are parameters we should control to get max profit
+ # These are parameters we should control to get max profit
 
 smma_slow_length = tf.Variable(300, name = "smma_slow_length")
 #tf_para_array[0] = smma_slow_length
@@ -47,7 +47,7 @@ signal_offset = tf.Variable(0.85, name = "signal_offset")
 signal_sigma = tf.Variable(6, name = "signal_sigma")
 
 
-##Now, we should represent the function using tensorflow
+# Now, we should represent the function using tensorflow
 '''
 @tf.function 
 def f(smma_slow_length, smma_fast_length, smma_fastest_length, 

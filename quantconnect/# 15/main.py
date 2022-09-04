@@ -23,6 +23,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetCash(100000)  # Set Strategy Cash
         self.Crypto = self.AddCrypto("BTCUSDT", Resolution.Hour, Market.GDAX).Symbol
+        # self.Crypto = self.AddCrypto("BTCUSDT", TimeSpan.FromMinutes(30), Market.GDAX).Symbol
         
         self.VOL_MA_LENGTH = config.VOL_MA
         self.VWMA1_LENGTH = config.VWMA_FASTEST
@@ -106,7 +107,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Train(self.TrainingMethod)
 
         # Set TrainingMethod to be executed at 8:00 am every Sunday
-        self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8 , 0), self.TrainingMethod)
+        # self.Train(self.DateRules.Every(DayOfWeek.Sunday), self.TimeRules.At(8 , 0), self.TrainingMethod)
 
     def MA_ATR_RSI_WARMUP(self, sender, bar):
         
