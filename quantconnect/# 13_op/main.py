@@ -790,6 +790,9 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_DOWN = self.rsi_ema.Current.Value - 50
                 else:
                     self.QQE_DOWN = None
+    @tf.function
+    def get_target(self):
+        return -self.Portfolio.TotalProfit
 
     def OnEndOfAlgorithm(self):
 
@@ -809,7 +812,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
         # Train to minize the -target.
-        train = optimizer.minimize(-target)
+        train = optimizer.minimize(self.get_target)
         # You can control this variable. We 'll get more profit if the step is bigger and bigger.
         step = 50
         # Initialize parameters as defaults.
@@ -837,27 +840,27 @@ class LogicalSkyBlueDog(QCAlgorithm):
         #     self.Initialize()
 
     def display_params(self):
-        self.Debug("tdi_rsi=" + om.tdi_rsi)
-        self.Debug("slow_ma_on_rsi=" + om.slow_ma_on_rsi)
-        self.Debug("fast_ma_on_rsi=" + om.fast_ma_on_rsi)
-        self.Debug("smma_slow_length=" + om.smma_slow_length)
-        self.Debug("smma_fast_length=" + om.smma_fast_length)
-        self.Debug("smma_fastest_length=" + om.smma_fastest_length)
-        self.Debug("signal_offset=" + om.signal_offset)
-        self.Debug("signal_sigma=" + om.signal_sigma)
-        self.Debug("band_length=" + om.band_length)
-        self.Debug("candle_size_factor=" + om.candle_size_factor)
-        self.Debug("donchain_period=" + om.donchain_period)
-        self.Debug("ema_period=" + om.ema_period)
-        self.Debug("fast_offset=" + om.fast_offset)
-        self.Debug("fast_sigma=" + om.fast_sigma)
-        self.Debug("long_alma_length=" + om.long_alma_length)
-        self.Debug("short_alma_length=" + om.short_alma_length)
-        self.Debug("tema_period=" + om.tema_period)
-        self.Debug("trend_offset=" + om.trend_offset)
-        self.Debug("trend_sigma=" + om.trend_sigma)
-        self.Debug("volatility_period=" + om.volatility_period)
-        self.Debug("volume_ma_length=" + om.volume_ma_length)
+        self.Debug("tdi_rsi=" + str(int(om.tdi_rsi)))
+        self.Debug("slow_ma_on_rsi=" + str(int(om.slow_ma_on_rsi)))
+        self.Debug("fast_ma_on_rsi=" + str(int(om.fast_ma_on_rsi)))
+        self.Debug("smma_slow_length=" + str(int(om.smma_slow_length)))
+        self.Debug("smma_fast_length=" + str(int(om.smma_fast_length)))
+        self.Debug("smma_fastest_length=" + str(int(om.smma_fastest_length)))
+        self.Debug("signal_offset=" + str(float(om.signal_offset)))
+        self.Debug("signal_sigma=" + str(int(om.signal_sigma)))
+        self.Debug("band_length=" + str(int(om.band_length)))
+        self.Debug("candle_size_factor=" + str(float(om.candle_size_factor)))
+        self.Debug("donchain_period=" + str(int(om.donchain_period)))
+        self.Debug("ema_period=" + str(int(om.ema_period)))
+        self.Debug("fast_offset=" + str(float(om.fast_offset)))
+        self.Debug("fast_sigma=" + str(int(om.fast_sigma)))
+        self.Debug("long_alma_length=" + str(int(om.long_alma_length)))
+        self.Debug("short_alma_length=" + str(int(om.short_alma_length)))
+        self.Debug("tema_period=" + str(int(om.tema_period)))
+        self.Debug("trend_offset=" + str(float(om.trend_offset)))
+        self.Debug("trend_sigma=" + str(int(om.trend_sigma)))
+        self.Debug("volatility_period=" + str(int(om.volatility_period)))
+        self.Debug("volume_ma_length=" + str(int(om.volume_ma_length)))
 
     def OnData(self, data: Slice):
 
