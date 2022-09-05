@@ -792,6 +792,8 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_DOWN = None
 
     def OnEndOfAlgorithm(self):
+
+        self.display_params()
         # self.Debug(self.Portfolio.TotalProfit)
         target = self.Portfolio.TotalProfit
         # now, target is the function of parameters
@@ -823,36 +825,39 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     print("i", i, session.run(target))
 
         optimize()
+
+        self.display_params()
         #%%
         # Now if we write each parameter in command, we can see optimized parameter
         # For example,
         # print(om.smma_fast_length, om.smma_fastest_length, om.smma_slow_length)
-
-        self.Debug("tdi_rsi=", om.tdi_rsi)
-        self.Debug("slow_ma_on_rsi=", om.slow_ma_on_rsi)
-        self.Debug("fast_ma_on_rsi=", om.fast_ma_on_rsi)
-        self.Debug("smma_slow_length=", om.smma_slow_length)
-        self.Debug("smma_fast_length=", om.smma_fast_length)
-        self.Debug("smma_fastest_length=", om.smma_fastest_length)
-        self.Debug("signal_offset=", om.signal_offset)
-        self.Debug("signal_sigma=", om.signal_sigma)
-        self.Debug("band_length=", om.band_length)
-        self.Debug("candle_size_factor=", om.candle_size_factor)
-        self.Debug("donchain_period=", om.donchain_period)
-        self.Debug("ema_period=", om.ema_period)
-        self.Debug("fast_offset=", om.fast_offset)
-        self.Debug("fast_sigma=", om.fast_sigma)
-        self.Debug("long_alma_length=", om.long_alma_length)
-        self.Debug("short_alma_length=", om.short_alma_length)
-        self.Debug("tema_period=", om.tema_period)
-        self.Debug("trend_offset=", om.trend_offset)
-        self.Debug("trend_sigma=", om.trend_sigma)
-        self.Debug("volatility_period=", om.volatility_period)
-        self.Debug("volume_ma_length=", om.volume_ma_length)
         # global cnt
         # if cnt < 2:
         #     cnt += 1
         #     self.Initialize()
+
+    def display_params(self):
+        self.Debug("tdi_rsi=" + om.tdi_rsi)
+        self.Debug("slow_ma_on_rsi=" + om.slow_ma_on_rsi)
+        self.Debug("fast_ma_on_rsi=" + om.fast_ma_on_rsi)
+        self.Debug("smma_slow_length=" + om.smma_slow_length)
+        self.Debug("smma_fast_length=" + om.smma_fast_length)
+        self.Debug("smma_fastest_length=" + om.smma_fastest_length)
+        self.Debug("signal_offset=" + om.signal_offset)
+        self.Debug("signal_sigma=" + om.signal_sigma)
+        self.Debug("band_length=" + om.band_length)
+        self.Debug("candle_size_factor=" + om.candle_size_factor)
+        self.Debug("donchain_period=" + om.donchain_period)
+        self.Debug("ema_period=" + om.ema_period)
+        self.Debug("fast_offset=" + om.fast_offset)
+        self.Debug("fast_sigma=" + om.fast_sigma)
+        self.Debug("long_alma_length=" + om.long_alma_length)
+        self.Debug("short_alma_length=" + om.short_alma_length)
+        self.Debug("tema_period=" + om.tema_period)
+        self.Debug("trend_offset=" + om.trend_offset)
+        self.Debug("trend_sigma=" + om.trend_sigma)
+        self.Debug("volatility_period=" + om.volatility_period)
+        self.Debug("volume_ma_length=" + om.volume_ma_length)
 
     def OnData(self, data: Slice):
 
