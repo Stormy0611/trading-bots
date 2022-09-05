@@ -792,11 +792,67 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_DOWN = None
 
     def OnEndOfAlgorithm(self):
-        self.Debug(self.Portfolio.TotalProfit)
-        global cnt
-        if cnt < 2:
-            cnt += 1
-            self.Initialize()
+        # self.Debug(self.Portfolio.TotalProfit)
+        target = self.Portfolio.TotalProfit
+        # now, target is the function of parameters
+        # We will use tf.compat.v1.train.GradientDescentOptimizier method in tensorflow
+        # weights means the array of learning_rate in Gradient Descent
+        weights = np.ones(21)
+        weights[12] = 0.1
+        weights[16] = 0.01
+        weights[17] = 0.01
+        weights[19] = 0.01
+        # Convert array to tensor
+        learning_rate = tf.constant(weights)
+
+        optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
+        # Train to minize the -target.
+        train = optimizer.minimize(-target)
+        # You can control this variable. We 'll get more profit if the step is bigger and bigger.
+        step = 50
+        # Initialize parameters as defaults.
+        init = tf.initialize_all_variables()
+
+        @tf.function
+        def optimize():
+            with tf.Session() as session:
+                session.run(init)
+
+                for i in range(step):
+                    session.run(train)
+                    print("i", i, session.run(target))
+
+        optimize()
+        #%%
+        # Now if we write each parameter in command, we can see optimized parameter
+        # For example,
+        # print(om.smma_fast_length, om.smma_fastest_length, om.smma_slow_length)
+
+        self.Debug("tdi_rsi=", om.tdi_rsi)
+        self.Debug("slow_ma_on_rsi=", om.slow_ma_on_rsi)
+        self.Debug("fast_ma_on_rsi=", om.fast_ma_on_rsi)
+        self.Debug("smma_slow_length=", om.smma_slow_length)
+        self.Debug("smma_fast_length=", om.smma_fast_length)
+        self.Debug("smma_fastest_length=", om.smma_fastest_length)
+        self.Debug("signal_offset=", om.signal_offset)
+        self.Debug("signal_sigma=", om.signal_sigma)
+        self.Debug("band_length=", om.band_length)
+        self.Debug("candle_size_factor=", om.candle_size_factor)
+        self.Debug("donchain_period=", om.donchain_period)
+        self.Debug("ema_period=", om.ema_period)
+        self.Debug("fast_offset=", om.fast_offset)
+        self.Debug("fast_sigma=", om.fast_sigma)
+        self.Debug("long_alma_length=", om.long_alma_length)
+        self.Debug("short_alma_length=", om.short_alma_length)
+        self.Debug("tema_period=", om.tema_period)
+        self.Debug("trend_offset=", om.trend_offset)
+        self.Debug("trend_sigma=", om.trend_sigma)
+        self.Debug("volatility_period=", om.volatility_period)
+        self.Debug("volume_ma_length=", om.volume_ma_length)
+        # global cnt
+        # if cnt < 2:
+        #     cnt += 1
+        #     self.Initialize()
 
     def OnData(self, data: Slice):
 
