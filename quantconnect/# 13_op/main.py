@@ -790,9 +790,6 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_DOWN = self.rsi_ema.Current.Value - 50
                 else:
                     self.QQE_DOWN = None
-    @tf.function
-    def get_target(self):
-        return -self.Portfolio.TotalProfit
 
     def OnEndOfAlgorithm(self):
 
@@ -812,7 +809,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         optimizer = tf.compat.v1.train.GradientDescentOptimizer(learning_rate)
         # Train to minize the -target.
-        train = optimizer.minimize(self.get_target)
+        train = optimizer.minimize(tf.Variable(-target, name="target"))
         # You can control this variable. We 'll get more profit if the step is bigger and bigger.
         step = 50
         # Initialize parameters as defaults.
@@ -889,14 +886,14 @@ class LogicalSkyBlueDog(QCAlgorithm):
             if self.Portfolio[self.Crypto].UnrealizedProfitPercent < -0.05:
                 self.SetHoldings(self.Crypto, 0)
 
-    def TrainingMethod(self):
+    # def TrainingMethod(self):
 
-        self.Log(f'Start training at {self.Time}')
-        # Use the historical data to train the machine learning model
-        history = self.History(["SPY"], 200, Resolution.Daily)
+    #     self.Log(f'Start training at {self.Time}')
+    #     # Use the historical data to train the machine learning model
+    #     history = self.History(["SPY"], 200, Resolution.Daily)
 
-        # ML code:
-        pass
+    #     # ML code:
+    #     pass
 
 # #%%
 # ##Run OnData function
