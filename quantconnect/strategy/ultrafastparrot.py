@@ -3,28 +3,29 @@ from collections import deque
 # import config
 import json
 import statistics as stats
+import setting
 
 class UltraFastParrot():
 
 
     def __init__(self, algorithm):
-        file = open("setting.py", "r")
-        lines = file.readlines()
-        config = {}
-        for line in lines:
-            list = line.split("=")
-            try:
-                config[list[0]] = int(list[1])
-            except:
-                config[list[0]] = float(list[1])
-        file.close()
-        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
-        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=config['SIGNAL_SIGMA'], offset=config['SIGNAL_OFFSET'])
+        # file = open("setting.py", "r")
+        # lines = file.readlines()
+        # config = {}
+        # for line in lines:
+        #     list = line.split("=")
+        #     try:
+        #         config[list[0]] = int(list[1])
+        #     except:
+        #         config[list[0]] = float(list[1])
+        # file.close()
+        self.MA_0 = ArnaudLegouxMovingAverage(period=3, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_1 = ArnaudLegouxMovingAverage(period=5, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_2 = ArnaudLegouxMovingAverage(period=8, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_3 = ArnaudLegouxMovingAverage(period=13, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_4 = ArnaudLegouxMovingAverage(period=21, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_5 = ArnaudLegouxMovingAverage(period=34, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
+        self.MA_6 = ArnaudLegouxMovingAverage(period=55, sigma=setting.SIGNAL_SIGMA, offset=setting.SIGNAL_OFFSET)
 
         self.Previous_Close = deque(maxlen=2)
         self.PC = None
@@ -150,14 +151,14 @@ class Double_Smooth():
         config_file = open("setting.py", "r")
         config = json.load(config_file)
         config_file.close()
-        self.Short = config['SHORT_ALMA_LENGTH']
-        self.Long = config['LONG_ALMA_LENGTH']
-        self.Offset = config['FAST_OFFSET']
-        self.OffsetT = config['TREND_OFFSET']
-        self.Sigma = config['FAST_SIGMA']
-        self.SigmaT = config['TREND_SIGMA']
-        self.First_Smooth = ArnaudLegouxMovingAverage(period=config['LONG_ALMA_LENGTH'], sigma=self.SigmaT, offset=self.OffsetT)
-        self.Last_Smooth = ArnaudLegouxMovingAverage(period=config['SHORT_ALMA_LENGTH'], sigma=self.Sigma, offset=self.Offset)
+        self.Short = setting.SHORT_ALMA_LENGTH
+        self.Long = setting.LONG_ALMA_LENGTH
+        self.Offset = setting.FAST_OFFSET
+        self.OffsetT = setting.TREND_OFFSET
+        self.Sigma = setting.FAST_SIGMA
+        self.SigmaT = setting.TREND_SIGMA
+        self.First_Smooth = ArnaudLegouxMovingAverage(period=setting.LONG_ALMA_LENGTH, sigma=self.SigmaT, offset=self.OffsetT)
+        self.Last_Smooth = ArnaudLegouxMovingAverage(period=setting.SHORT_ALMA_LENGTH, sigma=self.Sigma, offset=self.Offset)
         self.Test_Queue = deque(maxlen=10)
         self.IsRdy = False
         self.Return_Value = None

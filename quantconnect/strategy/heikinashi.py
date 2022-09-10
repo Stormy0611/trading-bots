@@ -2,28 +2,29 @@ from AlgorithmImports import *
 from collections import deque
 # import config
 import json
+import setting
 
 class Heikin_Ashi():
 
 
     def __init__(self, algorithm):
-        file = open("setting.py", "r")
-        lines = file.readlines()
-        config = {}
-        for line in lines:
-            list = line.split("=")
-            try:
-                config[list[0]] = int(list[1])
-            except:
-                config[list[0]] = float(list[1])
-        file.close()
+        # file = open("setting.py", "r")
+        # lines = file.readlines()
+        # config = {}
+        # for line in lines:
+        #     list = line.split("=")
+        #     try:
+        #         config[list[0]] = int(list[1])
+        #     except:
+        #         config[list[0]] = float(list[1])
+        # file.close()
         self.algorithm = algorithm
         # self.TEMA_Period = config.TEMA_PERIOD
         # self.EMA_Period = config.EMA_PERIOD
         # self.Candle_Size_Factor = config.CANDLE_SIZE_FACTOR
-        self.TEMA_Period = config['TEMA_PERIOD']
-        self.EMA_Period = config['EMA_PERIOD']
-        self.Candle_Size_Factor = config['CANDLE_SIZE_FACTOR']
+        self.TEMA_Period = setting.TEMA_PERIOD
+        self.EMA_Period = setting.EMA_PERIOD
+        self.Candle_Size_Factor = setting.CANDLE_SIZE_FACTOR
         self.ema_close = ExponentialMovingAverage(self.EMA_Period)  # SRC =
       
         self.EMA_Dictionary = {}
@@ -255,9 +256,9 @@ class Calc_Tema():
         config = json.load(config_file)
         config_file.close()
         self.algorithm = algorithm
-        self.TEMA_Period = config['TEMA_PERIOD']
-        self.EMA_Period = config['EMA_PERIOD']
-        self.Candle_Size_Factor = config['CANDLE_SIZE_FACTOR']
+        self.TEMA_Period = setting.TEMA_PERIOD
+        self.EMA_Period = setting.EMA_PERIOD
+        self.Candle_Size_Factor = setting.CANDLE_SIZE_FACTOR
         self.ema_1 = ExponentialMovingAverage(self.TEMA_Period) # SRC =
         self.ema_2 = ExponentialMovingAverage(self.TEMA_Period) # SRC = EMA1
         self.ema_3 = ExponentialMovingAverage(self.TEMA_Period) # SRC = EMA2

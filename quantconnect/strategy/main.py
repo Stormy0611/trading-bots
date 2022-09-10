@@ -11,20 +11,21 @@ import tdi
 import volume_ma
 import heikinashi
 import ultrafastparrot
+import setting
 
 class LogicalSkyBlueDog(QCAlgorithm):
 
     def Initialize(self):
-        file = open("setting.py", "r")
-        lines = file.readlines()
-        config = {}
-        for line in lines:
-            list = line.split("=")
-            try:
-                config[list[0]] = int(list[1])
-            except:
-                config[list[0]] = float(list[1])
-        file.close()
+        # file = open("setting.py", "r")
+        # lines = file.readlines()
+        # config = {}
+        # for line in lines:
+        #     list = line.split("=")
+        #     try:
+        #         config[list[0]] = int(list[1])
+        #     except:
+        #         config[list[0]] = float(list[1])
+        # file.close()
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetEndDate(2022, 8, 30)
         self.SetCash(100000)  # Set Strategy Cash
@@ -37,10 +38,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Indicators["HEIKINASHI"] = heikinashi.Heikin_Ashi(self)
         self.Indicators["ULTRAPARROT"] = ultrafastparrot.UltraFastParrot(self)
         self.lambda_func = lambda x: (x.High + x.Low) / 2.0
-        # self.SMMA_Slow_Length = config['SMMA_SLOW_LENGTH']
-        self.SMMA_Slow_Length = config['SMMA_SLOW_LENGTH']
-        self.SMMA_Fast_Length = config['SMMA_FAST_LENGTH']
-        self.SMMA_Fastest_Length = config['SMMA_FASTEST_LENGTH']
+        # self.SMMA_Slow_Length = setting.SMMA_SLOW_LENGTH
+        self.SMMA_Slow_Length = setting.SMMA_SLOW_LENGTH
+        self.SMMA_Fast_Length = setting.SMMA_FAST_LENGTH
+        self.SMMA_Fastest_Length = setting.SMMA_FASTEST_LENGTH
 
         self.sma_slow = SimpleMovingAverage(self.SMMA_Slow_Length)
         self.sma_fast = SimpleMovingAverage(self.SMMA_Fast_Length)
@@ -62,7 +63,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.SMMA_Fastest = None
 
 
-        self.rsi_tdi = RelativeStrengthIndex(config['TDI_RSI'])
+        self.rsi_tdi = RelativeStrengthIndex(setting.TDI_RSI)
         self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
 
         if self.SMMA_Slow is None and self.sma_slow.IsReady:
