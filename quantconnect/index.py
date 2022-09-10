@@ -2,9 +2,14 @@ import subprocess
 import strategy.config as config
 import json
 import random
+import datetime
 
 profit = 0
 profit_pre = 0
+
+while int(datetime.datetime.today().strftime("%H%d")) != 0:
+    pass
+
 
 while True:
     try:
