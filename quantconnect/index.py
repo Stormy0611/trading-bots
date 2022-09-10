@@ -9,7 +9,7 @@ profit_pre = 0
 while True:
     try:
         out = open("log.txt", "w")
-        subprocess.call('lean cloud backtest strategy', stdout=out)
+        subprocess.call('lean cloud backtest strategy13', stdout=out)
         out.close()
         try:
             out = open("log.txt", "r")
@@ -27,7 +27,7 @@ while True:
                     print("Net Profit:", profit)
                     break
             out.close()
-            file = open("strategy/setting.py", "r")
+            file = open("strategy13/config.py", "r")
             lines = file.readlines()
             config = {}
             for line in lines:
@@ -93,7 +93,7 @@ while True:
             lines = []
             for key in config.keys():
                 lines.append(key + "=" + str(config[key]) + "\n")
-            file = open("strategy/setting.py", "w")
+            file = open("strategy13/config.py", "w")
             file.writelines(lines)
             file.close()
         except Exception as err:
