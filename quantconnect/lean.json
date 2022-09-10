@@ -258,7 +258,7 @@
     "live-tradier": {
       "live-mode": true,
 
-      // this setting will save tradier access/refresh tokens to a tradier-tokens.txt file
+      // this setting.py will save tradier access/refresh tokens to a tradier-tokens.txt file
       // that can be read in next time, this makes it easier to start/stop a tradier algorithm
       "tradier-save-tokens": true,
 

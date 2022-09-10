@@ -33,7 +33,7 @@ SIGNAL_SIGMA = 6
 
 def set_from_file():
     try:
-        config_file = open("config.json", "r")
+        config_file = open("strategy/setting.py", "r")
         config = json.load(config_file)
         config_file.close()
         variables = globals()
@@ -87,7 +87,7 @@ def save_to_file():
     config['SIGNAL_OFFSET'] = variables['SIGNAL_OFFSET']
     config['SIGNAL_SIGMA'] = variables['SIGNAL_SIGMA']
     try:
-        config_file = open("config.json", "w")
+        config_file = open("strategy/setting.py", "w")
         json.dump(config, config_file)
         config_file.close()
     except Exception as err:

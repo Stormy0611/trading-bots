@@ -2,7 +2,7 @@ from AlgorithmImports import *
 from collections import deque
 import config
 from datetime import *
-import statistics as stats 
+import statistics as stats
 import time
 
 import donchian
@@ -12,11 +12,19 @@ import volume_ma
 import heikinashi
 import ultrafastparrot
 
-
 class LogicalSkyBlueDog(QCAlgorithm):
 
     def Initialize(self):
-        config.set_from_file()
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
         self.SetStartDate(2021, 1, 29)  # Set Start Date
         self.SetEndDate(2022, 8, 30)
         self.SetCash(100000)  # Set Strategy Cash
@@ -29,10 +37,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.Indicators["HEIKINASHI"] = heikinashi.Heikin_Ashi(self)
         self.Indicators["ULTRAPARROT"] = ultrafastparrot.UltraFastParrot(self)
         self.lambda_func = lambda x: (x.High + x.Low) / 2.0
-        # self.SMMA_Slow_Length = config.SMMA_SLOW_LENGTH
-        self.SMMA_Slow_Length = config.SMMA_SLOW_LENGTH
-        self.SMMA_Fast_Length = config.SMMA_FAST_LENGTH
-        self.SMMA_Fastest_Length = config.SMMA_FASTEST_LENGTH
+        # self.SMMA_Slow_Length = config['SMMA_SLOW_LENGTH']
+        self.SMMA_Slow_Length = config['SMMA_SLOW_LENGTH']
+        self.SMMA_Fast_Length = config['SMMA_FAST_LENGTH']
+        self.SMMA_Fastest_Length = config['SMMA_FASTEST_LENGTH']
 
         self.sma_slow = SimpleMovingAverage(self.SMMA_Slow_Length)
         self.sma_fast = SimpleMovingAverage(self.SMMA_Fast_Length)
@@ -43,8 +51,8 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.WarmUpIndicator(self.Crypto, self.sma_fastest, timedelta(hours=1))
 
         self.Daily_Consolidator = self.Consolidate(self.Crypto, timedelta(hours=1), self.IndicatorUpdate)
-        
-      
+
+
 
         self.Macd = MovingAverageConvergenceDivergence(12, 26, 9)
         self.WarmUpIndicator(self.Crypto, self.Macd, timedelta(hours=1))
@@ -54,7 +62,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.SMMA_Fastest = None
 
 
-        self.rsi_tdi = RelativeStrengthIndex(config.TDI_RSI)
+        self.rsi_tdi = RelativeStrengthIndex(config['TDI_RSI'])
         self.WarmUpIndicator(self.Crypto, self.rsi_tdi, timedelta(hours=1))
 
         if self.SMMA_Slow is None and self.sma_slow.IsReady:
@@ -63,7 +71,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
             self.SMMA_Fast = self.sma_fast.Current.Value
         if self.SMMA_Fastest is None and self.sma_fastest.IsReady:
             self.SMMA_Fastest = self.sma_fastest.Current.Value
-        
+
 
 
 
@@ -84,11 +92,11 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.rsi_sma = IndicatorExtensions.SMA(self.rsi, 5, waitForFirstToReady = True)
 
         self.rsi_sma_queue = deque(maxlen=3)
-        
+
         self.WarmUpIndicator(self.Crypto, self.rsi_sma, timedelta(hours=1))
-        
-        
-            
+
+
+
         self.atr_rsi = None
 
         self.Wilders_Period = self.rsi_period * 2 - 1
@@ -99,20 +107,20 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         self.rsi_warm = RelativeStrengthIndex(self.rsi_period)
         self.rsi_sma_warm = IndicatorExtensions.SMA(self.rsi_warm, 5, waitForFirstToReady = True)
-        
+
         self.dar_ema = ExponentialMovingAverage(self.Wilders_Period)
         self.dar = None
 
-      
-        
+
+
         self.Long_Band = 0
         self.Short_Band = 0
         self.Trend = 0
 
-       
+
         self.New_Short_Band = None
         self.New_Long_Band = None
-        
+
         self.Long_Band_Queue = deque(maxlen=3)
         self.Short_Band_Queue = deque(maxlen=3)
         self.Trend_Queue = deque(maxlen=3)
@@ -194,14 +202,14 @@ class LogicalSkyBlueDog(QCAlgorithm):
         self.QQE_UP = None
         self.QQE_DOWN = None
 
-       
+
         self.Warming_Up = True
 
         self.Warm_Up_Consolidator = TradeBarConsolidator(timedelta(hours=1))
         self.SubscriptionManager.AddConsolidator(self.Crypto, self.Warm_Up_Consolidator)
         self.Warm_Up_Consolidator.DataConsolidated += self.MA_ATR_RSI_WARMUP
 
-     
+
 
         history = map(lambda x: x[self.Crypto],self.History(1100 , Resolution.Hour))
         for row in history:
@@ -213,90 +221,90 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
 
     def MA_ATR_RSI_WARMUP(self, sender, bar):
-        
-      
-          
+
+
+
         TDI_Indie = self.Indicators["TDI"]
         if self.rsi_tdi.IsReady:
             TDI_Indie.Bull_Or_Bear(self.rsi_tdi.Current.Value)
-    
 
-        
+
+
         donchian_indie = self.Indicators["DONCHIAN"]
         donchian_indie.Donchian_Channel(bar.High, bar.Low, bar.Close)
         donchian_indie.Donchian_Alt(bar.High, bar.Low, bar.Close)
 
 
-        
+
         volatility_osc = self.Indicators["VOLATILITY"]
         volatility_osc.Bull_Or_Bear(bar.Close, bar.Open)
         # donchian.Donchian_Ribbon.__init__(self)
-        
 
-        
+
+
         VOLUME_Indie = self.Indicators["VOLUME"]
         color = bar.Close - bar.Open
         VOLUME_Indie.Bull_Or_Bear(bar.Volume, color)
 
 
-        
+
         heikin_ashi = self.Indicators["HEIKINASHI"]
         heikin_ashi.Bull_Or_Bear(bar.EndTime, bar.Open, bar.High, bar.Low, bar.Close)
-        
+
         ultra_fast_parrot = self.Indicators["ULTRAPARROT"]
         ultra_fast_parrot.Calculate_Parrot(bar.Close, bar.EndTime)
 
         if self.rsi_tdi.IsReady:
             TDI_Indie.Bull_Or_Bear(self.rsi_tdi.Current.Value)
         # self.Debug(donchian_indie.Color)
-        # self.Debug(str(volatility_osc.Bullish))    
+        # self.Debug(str(volatility_osc.Bullish))
 
         self.rsi_2.Update(IndicatorDataPoint(bar.EndTime , bar.Close))
         self.rsi_warm.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
-        
+
         if self.rsi_sma_warm.IsReady:
             self.rsi_sma_queue.appendleft(self.rsi_sma_warm.Current.Value)
-        
+
         ####### 2
 
-        
-        
+
+
         if self.rsi_ema.IsReady:
             self.rsi_2_queue.appendleft(self.rsi_ema.Current.Value)
 
         if len(self.rsi_2_queue) == 3:
             self.Atr_Rsi_2 = abs(self.rsi_2_queue[1] - self.rsi_ema.Current.Value)
-        
+
         if self.Atr_Rsi_2 is not None:
             self.Ema_Atr_Rsi_2.Update(IndicatorDataPoint(bar.EndTime, self.Atr_Rsi_2))
-        
+
         if self.Ema_Atr_Rsi_2.IsReady:
             self.Dar_2_Ema.Update(IndicatorDataPoint(bar.EndTime, self.Ema_Atr_Rsi_2.Current.Value))
 
         if self.Dar_2_Ema.IsReady:
             self.Dar_2 = self.Dar_2_Ema.Current.Value * self.QQE2
-        
+
         if self.rsi_ema.IsReady and self.Dar_2 is not None:
             self.New_Long_Band_2 = self.rsi_ema.Current.Value + self.Dar_2
             self.New_Short_Band_2 = self.rsi_ema.Current.Value - self.Dar_2
-        
+
         if len(self.rsi_2_queue) == 3 and len(self.Long_Band_Queue_2) == 3 and self.New_Long_Band_2 is not None:
             if self.rsi_2_queue[1] > self.Long_Band_Queue_2[1] and self.rsi_ema.Current.Value > self.Long_Band_Queue_2[1]:
                 self.Long_Band_2 = max(self.Long_Band_Queue_2[1], self.New_Long_Band_2)
             else:
                 self.Long_Band_2 = self.New_Long_Band_2
-        
+
         self.Long_Band_Queue_2.appendleft(self.Long_Band_2)
-        
+
         if len(self.rsi_2_queue) == 3 and len(self.Short_Band_Queue_2) == 3 and self.New_Short_Band_2 is not None:
             if self.rsi_2_queue[1] < self.Short_Band_Queue_2[1] and self.rsi_ema.Current.Value < self.Short_Band_Queue_2[1]:
                 self.Short_Band_2 = min(self.Short_Band_Queue_2[1], self.New_Short_Band_2)
             else:
                 self.Short_Band_2 = self.New_Short_Band_2
-        
+
         self.Short_Band_Queue_2.appendleft(self.Short_Band_2)
 
-        
+
 
 
 
@@ -307,7 +315,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.cross_2 = True
             else:
                 self.cross_2 = False
-        
+
         check_2 = False
         if len(self.Short_Band_Queue_2) == 3 and len(self.rsi_2_queue) == 2:
             if self.Short_Band_Queue_2[1] > self.rsi_ema.Current.Value  and self.Short_Band_Queue_2[2] < self.rsi_2_queue[1]:
@@ -316,7 +324,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 check_2 = True
             else:
                 check_2 = False
-            
+
             if check_2:
                 self.Trend_2 = 1
             if not check_2:
@@ -327,7 +335,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.Trend_2 = self.Trend_Queue_2[1]
                     else:
                         self.Trend_2 = 1
-        
+
         self.Trend_Queue_2.appendleft(self.Trend_2)
 
 
@@ -357,24 +365,24 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         if self.atr_rsi is not None:
             self.ma_atr_rsi.Update(IndicatorDataPoint(bar.EndTime, self.atr_rsi))
-        
+
         if self.ma_atr_rsi.IsReady:
             self.dar_ema.Update(IndicatorDataPoint(bar.EndTime, self.ma_atr_rsi.Current.Value))
-        
+
         if self.dar_ema.IsReady:
             self.dar = self.dar_ema.Current.Value * self.QQE
-        
+
         if self.dar is not None and self.rsi_sma_warm.IsReady:
             self.New_Long_Band = self.rsi_sma_warm.Current.Value - self.dar
             self.New_Short_Band = self.rsi_sma_warm.Current.Value + self.dar
-        
+
         if len(self.rsi_sma_queue) == 3 and len(self.Long_Band_Queue) == 3 and self.New_Long_Band is not None:
 
             if self.rsi_sma_queue[1] > self.Long_Band_Queue[1] and self.rsi_sma_queue[0] > self.Long_Band_Queue[1]:
                 self.Long_Band = max(self.Long_Band_Queue[1], self.New_Long_Band)
             else:
                 self.Long_Band = self.New_Long_Band
-        
+
         self.Long_Band_Queue.appendleft(self.Long_Band)
 
 
@@ -384,9 +392,9 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.Short_Band = min(self.Short_Band_Queue[1, self.New_Short_Band])
             else:
                 self.Short_Band = self.New_Short_Band
-        
+
         self.Short_Band_Queue.appendleft(self.Short_Band)
-        
+
         if len(self.Long_Band_Queue) == 3 and len(self.rsi_sma_queue) == 2:
             if self.Long_Band_Queue[1] > self.rsi_sma.Current.Value and self.Long_Band_Queue[2] < self.rsi_sma_queue[1]:
                 self.cross_1 = True
@@ -394,7 +402,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.cross_1 = True
             else:
                 self.cross_1 = False
-        
+
         check = False
         if len(self.Short_Band_Queue) == 3 and len(self.rsi_sma_queue) == 2:
             if self.Short_Band_Queue[1] > self.rsi_sma.Current.Value  and self.Short_Band_Queue[2] < self.rsi_sma_queue[1]:
@@ -403,7 +411,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 check = True
             else:
                 check = False
-            
+
             if check:
                 self.Trend = 1
             if not check:
@@ -414,7 +422,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.Trend = self.Trend_Queue[1]
                     else:
                         self.Trend = 1
-        
+
         self.Trend_Queue.appendleft(self.Trend)
 
 
@@ -425,19 +433,19 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
         if self.Fast_Atr_Rsi_Tl is not None:
             self.Basis_Queue.appendleft(self.Fast_Atr_Rsi_Tl-50)
-        
+
         if len(self.Basis_Queue) == self.Length:
             self.Basis = sum(self.Basis_Queue) / self.Length
-        
+
         if self.Fast_Atr_Rsi_Tl is not None:
             if len(self.Basis_Queue) == self.Length:
                 self.Dev = self.Mult * stats.stdev(self.Basis_Queue)
-        
+
         if self.Dev is not None:
             if self.Basis is not None:
                 self.Upper = self.Basis + self.Dev
                 self.Lower = self.Basis - self.Dev
-        
+
         if self.Upper is not None and self.Lower is not None:
             if (self.rsi_sma_warm.Current.Value - 50) > self.Upper:
                 self.Color_Bar = "GREEN"
@@ -445,7 +453,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.Color_Bar = "RED"
             else:
                 self.Color_Bar = "GRAY"
-        
+
 
         if self.rsi_sma_warm.IsReady:
             if self.rsi_sma_warm.Current.Value >= 50:
@@ -454,7 +462,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
             else:
                 self.QQE_z_Short = self.QQE_z_Short +1
                 self.QQE_z_Long = 0
-        
+
 
         if self.rsi_ema.IsReady:
             if self.rsi_ema.Current.Value - 50 > self.ThreshHold2:
@@ -463,10 +471,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.hcolor2 = "SILVER"
             else:
                 self.hcolor2= None
-        
+
         if self.Fast_Atr_Rsi_Tl_2 is not None:
             self.QQE_Line = self.Fast_Atr_Rsi_Tl_2 - 50
-        
+
         if self.rsi_ema.IsReady:
             self.Histo2 = self.rsi_ema.Current.Value - 50
 
@@ -492,20 +500,20 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.RedBar2 = True
             else:
                 self.RedBar2 = False
-        
+
 
         if self.GreenBar1 and self.GreenBar2:
             self.QQE_UP = self.rsi_ema.Current.Value - 50
         else:
             self.QQE_UP = None
-        
+
         if self.RedBar1 and self.RedBar2:
             self.QQE_DOWN = self.rsi_ema.Current.Value - 50
         else:
             self.QQE_DOWN = None
 
         self.Warming_Up = False
-                
+
 
 
     def IndicatorUpdate(self, bar):
@@ -519,7 +527,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
             if self.Macd.IsReady:
                 self.Macd.Update(IndicatorDataPoint(bar.EndTime, bar.Close))
             donchian_indie = self.Indicators["DONCHIAN"]
-        
+
             donchian_indie.Donchian_Channel(bar.High, bar.Low, bar.Close)
             donchian_indie.Donchian_Alt(bar.High, bar.Low, bar.Close)
             volatility_osc = self.Indicators["VOLATILITY"]
@@ -527,7 +535,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
             volatility_osc.Bull_Or_Bear(bar.Close, bar.Open)
             #t1 = time.perf_counter()
             #execution_time = t1 - t0
-            
+
             #self.Debug(execution_time)
 
             VOLUME_Indie = self.Indicators["VOLUME"]
@@ -556,7 +564,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
             if self.sma_fast.IsReady:
                 self.sma_fast.Update(IndicatorDataPoint(bar.EndTime, ((bar.Low + bar.High)/2)))
-            
+
             if self.sma_fastest.IsReady:
                 self.sma_fastest.Update(IndicatorDataPoint(bar.EndTime, ((bar.Low + bar.High)/2)))
 
@@ -576,44 +584,44 @@ class LogicalSkyBlueDog(QCAlgorithm):
                 self.rsi_2.Update(IndicatorDataPoint(bar.EndTime , bar.Close))
 
 
-        
-                
+
+
             if self.rsi_ema.IsReady:
                 self.rsi_2_queue.appendleft(self.rsi_ema.Current.Value)
 
             if len(self.rsi_2_queue) == 3:
                 self.Atr_Rsi_2 = abs(self.rsi_2_queue[1] - self.rsi_ema.Current.Value)
-            
+
             if self.Atr_Rsi_2 is not None:
                 self.Ema_Atr_Rsi_2.Update(IndicatorDataPoint(bar.EndTime, self.Atr_Rsi_2))
-            
+
             if self.Ema_Atr_Rsi_2.IsReady:
                 self.Dar_2_Ema.Update(IndicatorDataPoint(bar.EndTime, self.Ema_Atr_Rsi_2.Current.Value))
 
             if self.Dar_2_Ema.IsReady:
                 self.Dar_2 = self.Dar_2_Ema.Current.Value * self.QQE2
-            
+
             if self.rsi_ema.IsReady and self.Dar_2 is not None:
                 self.New_Long_Band_2 = self.rsi_ema.Current.Value + self.Dar_2
                 self.New_Short_Band_2 = self.rsi_ema.Current.Value - self.Dar_2
-            
+
             if len(self.rsi_2_queue) == 3 and len(self.Long_Band_Queue_2) == 3 and self.New_Long_Band_2 is not None:
                 if self.rsi_2_queue[1] > self.Long_Band_Queue_2[1] and self.rsi_ema.Current.Value > self.Long_Band_Queue_2[1]:
                     self.Long_Band_2 = max(self.Long_Band_Queue_2[1], self.New_Long_Band_2)
                 else:
                     self.Long_Band_2 = self.New_Long_Band_2
-            
+
             self.Long_Band_Queue_2.appendleft(self.Long_Band_2)
-            
+
             if len(self.rsi_2_queue) == 3 and len(self.Short_Band_Queue_2) == 3 and self.New_Short_Band_2 is not None:
                 if self.rsi_2_queue[1] < self.Short_Band_Queue_2[1] and self.rsi_ema.Current.Value < self.Short_Band_Queue_2[1]:
                     self.Short_Band_2 = min(self.Short_Band_Queue_2[1], self.New_Short_Band_2)
                 else:
                     self.Short_Band_2 = self.New_Short_Band_2
-            
+
             self.Short_Band_Queue_2.appendleft(self.Short_Band_2)
 
-            
+
 
 
 
@@ -624,7 +632,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.cross_2 = True
                 else:
                     self.cross_2 = False
-            
+
             check_2 = False
             if len(self.Short_Band_Queue_2) == 3 and len(self.rsi_2_queue) == 2:
                 if self.Short_Band_Queue_2[1] > self.rsi_ema.Current.Value  and self.Short_Band_Queue_2[2] < self.rsi_2_queue[1]:
@@ -633,7 +641,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     check_2 = True
                 else:
                     check_2 = False
-                
+
                 if check_2:
                     self.Trend_2 = 1
                 if not check_2:
@@ -644,7 +652,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                             self.Trend_2 = self.Trend_Queue_2[1]
                         else:
                             self.Trend_2 = 1
-            
+
             self.Trend_Queue_2.appendleft(self.Trend_2)
 
 
@@ -664,7 +672,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.QQE_z_Short_2 = self.QQE_z_Short_2 +1
                     self.QQE_z_Long_2 = 0
 
-            
+
             ########### 2
 
             if self.psar.IsReady:
@@ -679,28 +687,28 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
                 if len(self.rsi_sma_queue) == 3:
                     self.atr_rsi = abs(self.rsi_sma_queue[1] - self.rsi_sma.Current.Value)
-            
+
             if self.atr_rsi is not None:
                 self.ma_atr_rsi.Update(IndicatorDataPoint(self.Time, self.atr_rsi))
 
             if self.ma_atr_rsi.IsReady:
                 self.dar_ema.Update(IndicatorDataPoint(self.Time, self.ma_atr_rsi.Current.Value))
-                
+
             if self.dar_ema.IsReady:
                 self.dar = self.dar_ema.Current.Value * self.QQE
-            
+
 
                 if self.dar is not None and self.rsi_sma.IsReady:
                     self.New_Long_Band = self.rsi_sma.Current.Value - self.dar
                     self.New_Short_Band = self.rsi_sma.Current.Value + self.dar
-                
+
                 if len(self.rsi_sma_queue) == 3 and len(self.Long_Band_Queue) == 3 and self.New_Long_Band is not None:
 
                     if self.rsi_sma_queue[1] > self.Long_Band_Queue[1] and self.rsi_sma_queue[0] > self.Long_Band_Queue[1]:
                         self.Long_Band = max(self.Long_Band_Queue[1], self.New_Long_Band)
                     else:
                         self.Long_Band = self.New_Long_Band
-                
+
                 self.Long_Band_Queue.appendleft(self.Long_Band)
 
 
@@ -710,7 +718,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.Short_Band = min(self.Short_Band_Queue[1], self.New_Short_Band)
                     else:
                         self.Short_Band = self.New_Short_Band
-                
+
                 self.Short_Band_Queue.appendleft(self.Short_Band)
 
 
@@ -721,7 +729,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.cross_1 = True
                 else:
                     self.cross_1 = False
-                
+
                 check = False
 
                 if self.Short_Band_Queue[1] > self.rsi_sma.Current.Value and self.Short_Band_Queue[2] < self.rsi_sma_queue[1]:
@@ -730,7 +738,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     check = True
                 else:
                     check = False
-                
+
                 if check:
                     self.Trend = 1
                 if not check:
@@ -741,7 +749,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                             self.Trend = self.Trend_Queue[1]
                         else:
                             self.Trend = 1
-                
+
                 self.Trend_Queue.appendleft(self.Trend)
 
 
@@ -749,22 +757,22 @@ class LogicalSkyBlueDog(QCAlgorithm):
                     self.Fast_Atr_Rsi_Tl = self.Long_Band
                 else:
                     self.Fast_Atr_Rsi_Tl = self.Short_Band
-                
+
                 if self.Fast_Atr_Rsi_Tl is not None:
                     self.Basis_Queue.appendleft(self.Fast_Atr_Rsi_Tl-50)
-                
+
                 if len(self.Basis_Queue) == self.Length:
                     self.Basis = sum(self.Basis_Queue) / self.Length
-                
+
                 if self.Fast_Atr_Rsi_Tl is not None:
                     if len(self.Basis_Queue) == self.Length:
                         self.Dev = self.Mult * stats.stdev(self.Basis_Queue)
-                
+
                 if self.Dev is not None:
                     if self.Basis is not None:
                         self.Upper = self.Basis + self.Dev
                         self.Lower = self.Basis - self.Dev
-                
+
                 if self.Upper is not None and self.Lower is not None:
                     if (self.rsi_sma.Current.Value - 50) > self.Upper:
                         self.Color_Bar = "GREEN"
@@ -772,7 +780,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.Color_Bar = "RED"
                     else:
                         self.Color_Bar = "GRAY"
-                
+
                 if self.rsi_sma.IsReady:
                     if self.rsi_sma.Current.Value >= 50:
                         self.QQE_z_Long = self.QQE_z_Long + 1
@@ -789,10 +797,10 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.hcolor2 = "SILVER"
                     else:
                         self.hcolor2= None
-                
+
                 if self.Fast_Atr_Rsi_Tl_2 is not None:
                     self.QQE_Line = self.Fast_Atr_Rsi_Tl_2 - 50
-                
+
                 if self.rsi_ema.IsReady:
                     self.Histo2 = self.rsi_ema.Current.Value - 50
 
@@ -818,13 +826,13 @@ class LogicalSkyBlueDog(QCAlgorithm):
                         self.RedBar2 = True
                     else:
                         self.RedBar2 = False
-                
+
 
                 if self.GreenBar1 and self.GreenBar2:
                     self.QQE_UP = self.rsi_ema.Current.Value - 50
                 else:
                     self.QQE_UP = None
-                
+
                 if self.RedBar1 and self.RedBar2:
                     self.QQE_DOWN = self.rsi_ema.Current.Value - 50
                 else:
@@ -841,20 +849,20 @@ class LogicalSkyBlueDog(QCAlgorithm):
         VOLUME_Indie = self.Indicators["VOLUME"]
         heikin_ashi = self.Indicators["HEIKINASHI"]
         ultra_fast_parrot = self.Indicators["ULTRAPARROT"]
-         
+
         # self.Debug(f" {self.Time} {ultra_fast_parrot.TSI_Hist_Color}")
 
         if volatility_osc.Bullish and donchian_indie.Color == "GREEN" and self.QQE_UP is not None and TDI_indie.Bullish:
             if not self.Portfolio[self.Crypto].IsLong:
                 self.SetHoldings(self.Crypto, 1)
-     
+
 
 
         if volatility_osc.Bearish and donchian_indie.Color == "RED" and self.QQE_DOWN is not None and TDI_indie.Bearish:
             if not self.Portfolio[self.Crypto].IsShort:
                 self.SetHoldings(self.Crypto, -1)
 
-       
+
 
         if self.Portfolio[self.Crypto].Invested:
             if self.Portfolio[self.Crypto].UnrealizedProfitPercent > 0.01:

@@ -2,14 +2,24 @@
 from AlgorithmImports import *
 #endregion
 from collections import deque
-import config
+# import config
 import statistics as stats
+import json
 
 class Volatility_Oscillator():
     
     def __init__(self, algorithm):
-
-        self.Length = config.VOLATILITY_PERIOD
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
+        self.Length = config['VOLATILITY_PERIOD']
         self.Spike = None
         self.Spike_Queue = deque(maxlen=self.Length)
         self.X = None

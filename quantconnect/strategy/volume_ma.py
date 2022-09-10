@@ -1,17 +1,26 @@
 #region imports
 from AlgorithmImports import *
 #endregion
-import config
+# import config
 import statistics as stats
 from collections import deque
-
+import json
 
 
 class VOL_MA():
     
     def __init__(self, algorithm):
-
-        self.Length = config.VOLUME_MA_LENGTH
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
+        self.Length = config['VOLUME_MA_LENGTH']
 
         self.volume_ma = deque(maxlen=self.Length)
         self.volume_ma_value = None

@@ -1,20 +1,29 @@
 #region imports
 from AlgorithmImports import *
 #endregion
-import config
+# import config
 import statistics as stats
 from collections import deque
+import json
 
 
 class TDI():
     
     def __init__(self, algorithm):
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
 
-       
-
-        self.Band_Length = config.BAND_LENGTH
-        self.Fast_MA_On_RSI = config.FAST_MA_ON_RSI
-        self.Slow_MA_On_RSI = config.SLOW_MA_ON_RSI
+        self.Band_Length = config['BAND_LENGTH']
+        self.Fast_MA_On_RSI = config['FAST_MA_ON_RSI']
+        self.Slow_MA_On_RSI = config['SLOW_MA_ON_RSI']
         self.algorithm = algorithm
         self.ma = deque(maxlen=self.Band_Length)
         self.ma_value = None

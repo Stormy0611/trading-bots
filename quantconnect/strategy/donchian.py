@@ -2,12 +2,37 @@
 from AlgorithmImports import *
 #endregion
 from collections import deque
-import config
+# import config
+import json
 
 class Donchian_Ribbon():
-    
+
+    def set_from_file(self):
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
+
     def __init__(self, algorithm):
-        self.Donchian_Channel_Period = config.DONCHIAN_PERIOD
+        file = open("setting.py", "r")
+        lines = file.readlines()
+        config = {}
+        for line in lines:
+            list = line.split("=")
+            try:
+                config[list[0]] = int(list[1])
+            except:
+                config[list[0]] = float(list[1])
+        file.close()
+        # self.Donchian_Channel_Period = config.DONCHIAN_PERIOD
+        self.Donchian_Channel_Period = config['DONCHIAN_PERIOD']
+
         self.HH_LL_Period = 2
         self.Highest_High = deque(maxlen=self.HH_LL_Period)
         self.Lowest_Low = deque(maxlen=self.HH_LL_Period)
