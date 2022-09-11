@@ -7,8 +7,8 @@ import datetime
 profit = 0
 profit_pre = 0
 
-while int(datetime.datetime.today().strftime("%H%d")) != 0:
-    pass
+# while int(datetime.datetime.today().strftime("%H%m")) != 0:
+#     pass
 
 
 while True:
@@ -98,6 +98,7 @@ while True:
             lines = []
             for key in config.keys():
                 lines.append(key + "=" + str(config[key]) + "\n")
+            print(lines)
             file = open("strategy13/config.py", "w")
             file.writelines(lines)
             file.close()
