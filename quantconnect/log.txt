@@ -1,7 +1,0 @@
-Usage: lean cloud backtest [OPTIONS] PROJECT
-
-Try 'lean cloud backtest --help' for help or go to the following url for a list
-of common errors:
-https://www.lean.io/docs/lean-cli/key-concepts/troubleshooting#02-Common-Errors
-
-Error: Got unexpected extra argument (13')
