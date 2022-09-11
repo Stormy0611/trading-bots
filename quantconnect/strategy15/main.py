@@ -21,6 +21,7 @@ class LogicalSkyBlueDog(QCAlgorithm):
 
     def Initialize(self):
         self.SetStartDate(2021, 1, 29)  # Set Start Date
+        self.SetEndDate(2022, 8, 31)
         self.SetCash(100000)  # Set Strategy Cash
         self.Crypto = self.AddCrypto("BTCUSDT", Resolution.Hour, Market.GDAX).Symbol
         # self.Crypto = self.AddCrypto("BTCUSDT", TimeSpan.FromMinutes(30), Market.GDAX).Symbol
