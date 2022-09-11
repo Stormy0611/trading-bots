@@ -14,7 +14,7 @@ profit_pre = 0
 while True:
     try:
         out = open("log.txt", "w")
-        subprocess.call('lean cloud backtest strategy13', stdout=out)
+        subprocess.call('lean cloud backtest --push strategy13', stdout=out)
         out.close()
         try:
             out = open("log.txt", "r")
@@ -42,10 +42,17 @@ while True:
                 except:
                     config[list[0]] = float(list[1])
             file.close()
-            print(config)
+            # print(config)
             if profit - profit_pre > 0:
                 print(profit_pre, " >>>> ", profit)
-                # print(config)
+                print(config)
+                lines = []
+                for key in config.keys():
+                    lines.append(key + "=" + str(config[key]) + "\n")
+                # print(lines)
+                file = open("config.py", "w")
+                file.writelines(lines)
+                file.close()
                 # print(config.SMMA_SLOW_LENGTH)
                 # print(config.SMMA_FAST_LENGTH)
                 # print(config.SMMA_FASTEST_LENGTH)
@@ -98,7 +105,7 @@ while True:
             lines = []
             for key in config.keys():
                 lines.append(key + "=" + str(config[key]) + "\n")
-            print(lines)
+            # print(lines)
             file = open("strategy13/config.py", "w")
             file.writelines(lines)
             file.close()
