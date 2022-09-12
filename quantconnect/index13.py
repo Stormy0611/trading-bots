@@ -20,7 +20,8 @@ while True:
             out = open("log.txt", "r")
             lines = out.readlines()
             for line in lines:
-                if "Net Profit" in line and '%' in line and '$' not in line:
+                # if "Net Profit" in line and '%' in line and '$' not in line:
+                if 'Win Rate' in line and '%' in line:
                     # print(line)
                     i = 0
                     while not ('0' <= line[i] <= '9'):
@@ -29,7 +30,8 @@ while True:
                     while line[j] != '%':
                         j += 1
                     profit = float(line[i:j - 1])
-                    print("Net Profit:", profit)
+                    # print("Net Profit:", profit)
+                    print("Win Rate", profit)
                     break
             out.close()
             file = open("strategy13/config.py", "r")
